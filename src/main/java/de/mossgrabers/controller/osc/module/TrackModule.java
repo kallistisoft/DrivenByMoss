@@ -108,7 +108,14 @@ public class TrackModule extends AbstractModule
         this.writer.sendOSC ("/track/hasParent", trackBank.hasParent (), dump);
     }
 
-
+    
+    
+    /**
+     * Keep track of the last selected clip address, used to emit currently selected clip name
+     * when moving the cursor
+     */
+    private String lastSelectedClipAddress;
+    
     /**
      * Flush all data of a track.
      *
@@ -154,8 +161,16 @@ public class TrackModule extends AbstractModule
         {
             final ISlot slot = slotBank.getItem (i);
             final String clipAddress = trackAddress + "clip/" + (i + 1) + "/";
-            writer.sendOSC (clipAddress + TAG_NAME, slot.getName (), dump);
+            
+            boolean forceClipName = false;
+            if( slot.isSelected() == true && !clipAddress.contains("/track/selected/") ) {
+                if( ! clipAddress.equals(lastSelectedClipAddress) )
+                    forceClipName = true;
+                lastSelectedClipAddress = clipAddress;
+            }
+            
             writer.sendOSC (clipAddress + "isSelected", slot.isSelected (), dump);
+            writer.sendOSC (clipAddress + TAG_NAME, slot.getName (), dump|forceClipName);
             writer.sendOSC (clipAddress + "hasContent", slot.hasContent (), dump);
             writer.sendOSC (clipAddress + "isPlaying", slot.isPlaying (), dump);
             writer.sendOSC (clipAddress + "isRecording", slot.isRecording (), dump);

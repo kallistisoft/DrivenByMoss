@@ -114,7 +114,12 @@ public class SceneModule extends AbstractModule
                 break;
         }
     }
-
+    
+    /**
+     * Keep track of the last selected scene address, used to emit currently selected scene name
+     * when moving the cursor
+     */
+    private String lastSelectedSceneAddress;
 
     /** {@inheritDoc} */
     @Override
@@ -125,9 +130,17 @@ public class SceneModule extends AbstractModule
         {
             final IScene scene = sceneBank.getItem (i);
             final String sceneAddress = "/scene/" + (i + 1) + "/";
+            
+            boolean forceSceneName = false;
+            if( scene.isSelected() == true ) {
+                if( ! sceneAddress.equals(lastSelectedSceneAddress) )
+                    forceSceneName = true;
+                lastSelectedSceneAddress = sceneAddress;
+            }
+            
+            this.writer.sendOSC (sceneAddress + TAG_SELECTED, scene.isSelected (), dump);            
             this.writer.sendOSC (sceneAddress + TAG_EXISTS, scene.doesExist (), dump);
-            this.writer.sendOSC (sceneAddress + TAG_NAME, scene.getName (), dump);
-            this.writer.sendOSC (sceneAddress + TAG_SELECTED, scene.isSelected (), dump);
+            this.writer.sendOSC (sceneAddress + TAG_NAME, scene.getName (), dump|forceSceneName);
         }
     }
 }
