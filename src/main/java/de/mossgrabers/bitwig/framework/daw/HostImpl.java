@@ -28,6 +28,7 @@ import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 import de.mossgrabers.framework.usb.IUsbDevice;
 import de.mossgrabers.framework.usb.UsbException;
 import de.mossgrabers.framework.utils.ConsoleLogger;
+import de.mossgrabers.framework.utils.StringUtils;
 
 import com.bitwig.extension.api.graphics.BitmapFormat;
 import com.bitwig.extension.api.opensoundcontrol.OscAddressSpace;
@@ -36,6 +37,7 @@ import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.HardwareDevice;
 import com.bitwig.extension.controller.api.UsbDevice;
 
+import java.io.ByteArrayOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -45,7 +47,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
 
 /**
  * Encapsulates the ControllerHost instance.
@@ -60,7 +61,8 @@ public class HostImpl implements IHost
     private ControllerHost                     host;
     private List<IUsbDevice>                   usbDevices           = new ArrayList<> ();
 
-
+    private final List<IOpenSoundControlMessage>   ttsOscMessages    = new ArrayList<> ();
+    
     /**
      * Constructor.
      *
@@ -69,10 +71,18 @@ public class HostImpl implements IHost
     public HostImpl (final ControllerHost host)
     {
         this.host = host;
-
+        
+        //String caller = Thread.currentThread().getStackTrace()[2].getMethodName();        
+        //this.error( "HostImpl: " + this.getName() );
+        //this.error( "Calling: " + caller );
+        
         readDeviceFiles ();
     }
 
+    @Override
+    public List<IOpenSoundControlMessage> getTTSOscMessage() {
+        return this.ttsOscMessages;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -166,6 +176,16 @@ public class HostImpl implements IHost
     @Override
     public void showNotification (final String message)
     {
+        // this.error( "showNotification( " + message + ")" );    
+        
+        // Format and send OSC packet containing message text with address /hearwig/moss
+        ByteArrayOutputStream oscUdpPacket = new ByteArrayOutputStream();
+        this._osc_write( oscUdpPacket, "/hearwig/moss" );
+        this._osc_write( oscUdpPacket, ",s" );
+        this._osc_write( oscUdpPacket, message );        
+        this.host.sendDatagramPacket( "127.0.0.1", 9000, oscUdpPacket.toByteArray() );
+        
+        // Display Bitwig Popup Notification
         this.host.showPopupNotification (message);
     }
 
@@ -351,4 +371,54 @@ public class HostImpl implements IHost
             return Collections.emptyList ();
         }
     }
+    
+    // OSC PACKET SERIALIZATION METHODS -- Derived from https://github.com/hoijui/JavaOSC
+    //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+    @SuppressWarnings("WeakerAccess")
+	/**
+	 * Writes NULL bytes to ouput buffer
+	 * @param output to receive the data-piece termination and alignment
+	 */
+	public void _osc_terminate(final ByteArrayOutputStream output) {
+        output.write((byte) 0);
+	}
+
+	/**
+	 * Align a buffer by padding it with {@code (byte) '0'}s so it has a size
+	 * divisible by {@link OSCParser#ALIGNMENT_BYTES}.
+	 * @param output to be aligned
+	 * @see OSCParser#align
+	 */
+	public void _osc_align(final ByteArrayOutputStream output) {
+		final int alignmentOverlap = output.size() % 4;
+		final int padLen = (4 - alignmentOverlap) % 4;
+		for (int pci = 0; pci < padLen; pci++) {
+            output.write((byte) 0);
+        }
+	}
+
+	/**
+	 * Terminates the previously written piece of data with a single {@code (byte) '0'},
+	 * and then aligns the stream by padding it with {@code (byte) '0'}s so it has a size
+	 * divisible by 4-bytes (32-bit padding is the OSC v1.0 standard).
+	 * We always need to terminate with a zero, especially when the stream is already aligned.
+	 * @param output to receive the data-piece termination and alignment
+	 */
+	public void _osc_terminateAndAlign(final ByteArrayOutputStream output) {
+		_osc_terminate(output);
+		_osc_align(output);
+	}
+    /**
+    * Write aa byte aligned a string to the output buffer
+    * @param output to receive the data-piece termination and alignment 
+    */
+    public void _osc_write( final ByteArrayOutputStream output, final String text ) {
+        try {
+            output.write( text.getBytes() );
+        } catch( final IOException ex ) {
+            this.error( "Error writing osc stream", ex );
+        }
+        _osc_terminateAndAlign( output );
+    }
+    
 }

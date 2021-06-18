@@ -9,3 +9,4 @@ fileHashes.lock
 /.idea
 *.iml
 /bin/
+/doxygen
