@@ -60,8 +60,6 @@ public class HostImpl implements IHost
 
     private ControllerHost                     host;
     private List<IUsbDevice>                   usbDevices           = new ArrayList<> ();
-
-    private final List<IOpenSoundControlMessage>   ttsOscMessages    = new ArrayList<> ();
     
     /**
      * Constructor.
@@ -77,11 +75,6 @@ public class HostImpl implements IHost
         //this.error( "Calling: " + caller );
         
         readDeviceFiles ();
-    }
-
-    @Override
-    public List<IOpenSoundControlMessage> getTTSOscMessage() {
-        return this.ttsOscMessages;
     }
 
     /** {@inheritDoc} */
