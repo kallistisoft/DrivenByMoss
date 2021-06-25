@@ -92,7 +92,7 @@ public class BrowserModule extends AbstractModule
             case "filter":
                 final String indexCmd = getSubCommand (path);
                 int column = Integer.parseInt (indexCmd);
-                if (column < 1 || column > 6)
+                if (column < 1 || column > 8)
                     return;
                 column = column - 1;
                 if (!browser.isActive ())
