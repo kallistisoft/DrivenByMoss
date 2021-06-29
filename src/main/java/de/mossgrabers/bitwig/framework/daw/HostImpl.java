@@ -28,7 +28,6 @@ import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 import de.mossgrabers.framework.usb.IUsbDevice;
 import de.mossgrabers.framework.usb.UsbException;
 import de.mossgrabers.framework.utils.ConsoleLogger;
-import de.mossgrabers.framework.utils.StringUtils;
 
 import com.bitwig.extension.api.graphics.BitmapFormat;
 import com.bitwig.extension.api.opensoundcontrol.OscAddressSpace;
@@ -367,7 +366,6 @@ public class HostImpl implements IHost
     
     // OSC PACKET SERIALIZATION METHODS -- Derived from https://github.com/hoijui/JavaOSC
     //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    @SuppressWarnings("WeakerAccess")
 	/**
 	 * Writes NULL bytes to ouput buffer
 	 * @param output to receive the data-piece termination and alignment

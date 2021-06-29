@@ -51,6 +51,7 @@ public class VirtualFaderImpl implements IVirtualFader
     private int                         moveDelay;
     private int                         moveTimerDelay;
     private int                         moveDestination;
+    private int                         moveTargetValue;
 
 
     /**
@@ -137,28 +138,44 @@ public class VirtualFaderImpl implements IVirtualFader
             if (newDestination > max)
                 newDestination = min;
         }
-        else if (row == 0)
-        {
+        else if (row == 0) {
             newDestination = 0;
         }
 
-        this.moveDestination = newDestination;
-
+        this.moveDestination = newDestination;        
         this.moveFaderToDestination ();
     }
 
 
     protected void moveFaderToDestination ()
     {
+
         final int current = this.callback.getValue ();
+
         if (current < this.moveDestination)
-            this.callback.setValue (Math.min (current + this.moveDelay, this.moveDestination));
+            this.moveTargetValue = Math.min (current + this.moveDelay, this.moveDestination);
         else if (current > this.moveDestination)
-            this.callback.setValue (Math.max (current - this.moveDelay, this.moveDestination));
+            this.moveTargetValue = Math.max (current - this.moveDelay, this.moveDestination);
         else
             return;
 
-        this.host.scheduleTask (this::moveFaderToDestination, this.moveTimerDelay);
+        this.callback.setValue ( this.moveTargetValue );
+
+        // YIELD to Bitwig to allow the parameter value to update properly
+        this.host.scheduleTask(this::moveFaderToDestinationCallback, 1);
+    }
+
+    protected void moveFaderToDestinationCallback ()
+    {
+        final int updatedValue = this.callback.getValue();
+
+        // Compare updated parameter value to target update value, if different it means that the parameter is
+        // either a boolean or selection list type and the destination value should be force set
+        if( updatedValue != this.moveTargetValue ) {
+            this.callback.setValue( this.moveDestination );
+        } else {
+            this.host.scheduleTask(this::moveFaderToDestination, this.moveTimerDelay);
+        }
     }
 
 
