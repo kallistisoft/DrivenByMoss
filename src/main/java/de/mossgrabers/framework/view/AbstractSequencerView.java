@@ -115,7 +115,12 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
     {
         super.onActivate ();
 
-        this.getClip ().setStepLength (Resolution.getValueAt (this.selectedResolutionIndex));
+        final INoteClip clip = this.getClip ();
+        clip.setStepLength (Resolution.getValueAt (this.selectedResolutionIndex));
+
+        // force editing of first page when initializing the sequencer
+        clip.scrollToPage(0);
+        this.mvHelper.notifyEditPage (clip);
     }
 
 
@@ -151,7 +156,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
             return;
         final INoteClip clip = this.getClip ();
         clip.scrollStepsPageBackwards ();
-        this.mvHelper.notifyEditPage (clip);
+         this.mvHelper.notifyEditPage (clip);
     }
 
 
