@@ -46,7 +46,9 @@ public class LaunchpadShuffleView extends ShuffleView<LaunchpadControlSurface, L
             final IParameter enabledParameter = groove.getParameter (GrooveParameterID.ENABLED);
             if (enabledParameter != null)
             {
-                enabledParameter.setNormalizedValue (enabledParameter.getValue () == 0 ? 1 : 0);
+                final int state = enabledParameter.getValue () == 0 ? 1 : 0;
+                enabledParameter.setNormalizedValue (state);
+                this.surface.getDisplay().notify ("Groove " + (state == 1? "Activated" : "Disabled") );
                 return;
             }
         }
@@ -58,7 +60,9 @@ public class LaunchpadShuffleView extends ShuffleView<LaunchpadControlSurface, L
             final IParameter rateParameter = groove.getParameter (GrooveParameterID.SHUFFLE_RATE);
             if (rateParameter != null)
             {
-                rateParameter.setNormalizedValue (rateParameter.getValue () == 0 ? 1 : 0);
+                final int rate = rateParameter.getValue () == 0 ? 1 : 0;
+                rateParameter.setNormalizedValue (rate);
+                this.surface.getDisplay().notify ("Groove Rate " + (rate == 1? "1/16th" : "1/8th") );
                 return;
             }
         }

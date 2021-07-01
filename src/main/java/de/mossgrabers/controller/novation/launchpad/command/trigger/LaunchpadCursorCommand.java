@@ -202,6 +202,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
             case SHIFT:
                 viewManager.setTemporary (Views.SHUFFLE);
+                this.surface.getDisplay().notify("Shuffle Mode");
                 break;
 
             case PLAY:
@@ -298,6 +299,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
             case SHIFT:
                 viewManager.setTemporary (Views.SHUFFLE);
+                this.surface.getDisplay().notify("Shuffle Mode "); // NOTE: trailing space is intentional
                 break;
 
             case PLAY:
@@ -393,6 +395,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
             case SHIFT:
                 viewManager.setTemporary (Views.TEMPO);
+                this.surface.getDisplay().notify("Tempo Mode");
                 break;
 
             case PLAY:
@@ -468,6 +471,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
             case SHIFT:
                 viewManager.setTemporary (Views.TEMPO);
+                this.surface.getDisplay().notify("Tempo Mode "); // NOTE: trailing space is intentional
                 break;
 
             case PLAY:
