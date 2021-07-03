@@ -195,6 +195,8 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         switch (viewManager.getActiveID ())
         {
             case POLY_SEQUENCER:
+            case SEQUENCER:
+            case DRUM:
             case DRUM4:
             case DRUM8:
                 final IView activeView = viewManager.getActive ();
@@ -313,6 +315,8 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         switch (viewManager.getActiveID ())
         {
             case POLY_SEQUENCER:
+            case SEQUENCER:
+            case DRUM:
             case DRUM4:
             case DRUM8:
                 final IView activeView = viewManager.getActive ();

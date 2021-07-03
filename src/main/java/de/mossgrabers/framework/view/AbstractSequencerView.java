@@ -153,11 +153,21 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         if (event == ButtonEvent.LONG) {
             final INoteClip clip = this.getClip ();
             final int lengthOfOnePage = this.getLengthOfOnePage (this.clipCols );
-            final int end = clip.getEditPage() + 1;
-            clip.setLoopStart (0.0);
-            clip.setLoopLength ( end * lengthOfOnePage );
-            clip.setPlayRange (0.0, (double) end * lengthOfOnePage);
-            this.surface.getDisplay().notify("Clip Length " + end);
+
+            // calculate loop start and end in pattern page units
+            int start = (int)(clip.getLoopStart () / (double)(lengthOfOnePage));
+            int end = clip.getEditPage () + 1;
+
+            // prevent end of loop being before start of loop
+            if( end <= start ) {
+                start = end-1;
+            }
+
+            // set clip loop and play length
+            clip.setLoopStart ( start * lengthOfOnePage );
+            clip.setLoopLength ( (end-start) * lengthOfOnePage );
+            clip.setPlayRange (0.0, (double) (end-start) * lengthOfOnePage);
+            this.surface.getDisplay().notify ("Clip Length " + (end-start));
         }
     }
 
@@ -180,7 +190,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         // move pattern edit page to the left
         final INoteClip clip = this.getClip ();
         clip.scrollStepsPageBackwards ();
-         this.mvHelper.notifyEditPage (clip);
+        this.mvHelper.notifyEditPage (clip);
     }
 
 

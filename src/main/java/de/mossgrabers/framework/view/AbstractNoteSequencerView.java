@@ -228,6 +228,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
         {
             // Only single pad pressed -> page selection
             clip.scrollToPage (pad);
+            this.mvHelper.notifyEditPage (clip);
         }
         else
         {

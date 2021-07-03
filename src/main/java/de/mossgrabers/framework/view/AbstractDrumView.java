@@ -357,6 +357,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         {
             // Only single pad pressed -> page selection
             clip.scrollToPage (pad);
+            this.mvHelper.notifyEditPage (clip);
         }
         else
         {
