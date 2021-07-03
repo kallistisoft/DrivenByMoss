@@ -243,6 +243,17 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         return this.isBirdsEyeActive;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    protected void handleSceneButtonCombinations (final IScene scene)
+    {
+       super.handleSceneButtonCombinations (scene);
+
+        if (this.isButtonCombination (ButtonID.DELETE) && this.configuration.isDeleteModeActive ())
+            this.configuration.toggleDeleteModeActive ();
+        else if (this.isButtonCombination (ButtonID.DUPLICATE) && this.configuration.isDuplicateModeActive ())
+            this.configuration.toggleDuplicateModeActive ();
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -252,7 +263,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
 
         if (this.isButtonCombination (ButtonID.DELETE) && this.configuration.isDeleteModeActive ())
             this.configuration.toggleDeleteModeActive ();
-        else if (this.isButtonCombination (ButtonID.DUPLICATE) && this.configuration.isDuplicateModeActive () && (!slot.doesExist () || !slot.hasContent ()))
+        else if (this.isButtonCombination (ButtonID.DUPLICATE) && this.configuration.isDuplicateModeActive ())
             this.configuration.toggleDuplicateModeActive ();
 
         return result;
@@ -301,12 +312,14 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         if (this.isButtonCombination (ButtonID.DELETE))
         {
             track.remove ();
+            this.configuration.toggleDeleteModeActive();
             return;
         }
 
         if (this.isButtonCombination (ButtonID.DUPLICATE))
         {
             track.duplicate ();
+            this.configuration.toggleDuplicateModeActive();
             return;
         }
 

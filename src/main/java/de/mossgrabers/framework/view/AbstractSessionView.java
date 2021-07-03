@@ -222,9 +222,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         if (this.isButtonCombination (ButtonID.DUPLICATE))
         {
             if (slot.doesExist () && slot.hasContent ())
-                this.sourceSlot = slot;
-            else if (this.sourceSlot != null)
-                slot.paste (this.sourceSlot);
+                slot.duplicate();
             return true;
         }
 

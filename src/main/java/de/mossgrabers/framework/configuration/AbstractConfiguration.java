@@ -1711,6 +1711,9 @@ public abstract class AbstractConfiguration implements Configuration
         this.isDeleteActive = !this.isDeleteActive;
         if (this.isDeleteActive)
             this.isDuplicateActive = false;
+
+        if( !this.isDeleteActive )
+            this.host.showNotification ("Delete Off");
     }
 
 
@@ -1733,6 +1736,9 @@ public abstract class AbstractConfiguration implements Configuration
         this.isDuplicateActive = !this.isDuplicateActive;
         if (this.isDuplicateActive)
             this.isDeleteActive = false;
+
+        if( !this.isDuplicateActive )
+            this.host.showNotification ("Duplicate Off");
     }
 
 
