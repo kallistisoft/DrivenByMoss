@@ -144,6 +144,22 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         this.setResolutionIndex (7 - index);
     }
 
+    /**
+     * Handle long press of scroll events by resizing the clip loop length
+     *
+     * @param event Button event that triggered the call
+     */
+    private void onLeftRightLong (final ButtonEvent event) {
+        if (event == ButtonEvent.LONG) {
+            final INoteClip clip = this.getClip ();
+            final int lengthOfOnePage = this.getLengthOfOnePage (this.clipCols );
+            final int end = clip.getEditPage() + 1;
+            clip.setLoopStart (0.0);
+            clip.setLoopLength ( end * lengthOfOnePage );
+            clip.setPlayRange (0.0, (double) end * lengthOfOnePage);
+            this.surface.getDisplay().notify("Clip Length " + end);
+        }
+    }
 
     /**
      * Scroll clip left.
@@ -152,8 +168,16 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      */
     public void onLeft (final ButtonEvent event)
     {
+        // shrink clip loop length
+        if (event == ButtonEvent.LONG) {
+            this.onLeftRightLong( event );
+            return;
+        }
+
         if (event != ButtonEvent.DOWN)
             return;
+
+        // move pattern edit page to the left
         final INoteClip clip = this.getClip ();
         clip.scrollStepsPageBackwards ();
          this.mvHelper.notifyEditPage (clip);
@@ -167,8 +191,16 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      */
     public void onRight (final ButtonEvent event)
     {
+        // grow the clip loop length
+        if (event == ButtonEvent.LONG) {
+            this.onLeftRightLong( event );
+            return;
+        }
+
         if (event != ButtonEvent.DOWN)
             return;
+
+        // move pattern edit page to the right
         final INoteClip clip = this.getClip ();
         clip.scrollStepsPageForward ();
         this.mvHelper.notifyEditPage (clip);
@@ -268,7 +300,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      * @param loopStartPage The page where the loop starts
      * @param loopEndPage The page where the loop ends
      * @param playPage The page which contains the currently played step
-     * @param selectedPage The page selected fpr editing
+     * @param selectedPage The page selected for editing
      * @param page The page for which to get the color
      * @return The color to use
      */

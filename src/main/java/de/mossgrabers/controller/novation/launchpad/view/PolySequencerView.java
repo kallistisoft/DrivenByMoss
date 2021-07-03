@@ -7,6 +7,9 @@ package de.mossgrabers.controller.novation.launchpad.view;
 import de.mossgrabers.controller.novation.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.IStepInfo;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPolySequencerView;
 
 

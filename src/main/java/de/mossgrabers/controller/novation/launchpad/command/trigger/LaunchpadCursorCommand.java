@@ -186,6 +186,26 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         }
     }
 
+    /**
+     * Handle long press of left arrow key
+     */
+    @Override
+    protected void scrollLeftLong () {
+        final ViewManager viewManager = this.surface.getViewManager ();
+        switch (viewManager.getActiveID ())
+        {
+            case POLY_SEQUENCER:
+            case DRUM4:
+            case DRUM8:
+                final IView activeView = viewManager.getActive ();
+                if (activeView instanceof AbstractSequencerView)
+                {
+                    final AbstractSequencerView sequencerView = (AbstractSequencerView) activeView;
+                    sequencerView.onLeft (ButtonEvent.LONG);
+                }
+                break;
+        }
+    }
 
     /** {@inheritDoc} */
     @SuppressWarnings("rawtypes")
@@ -213,13 +233,14 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 this.surface.getDisplay ().notify (name);
                 break;
 
+
             case PIANO:
             case DRUM64:
+            case RAINDROPS:
                 // Not used
                 break;
 
             case SEQUENCER:
-            case RAINDROPS:
             case POLY_SEQUENCER:
             case DRUM:
             case DRUM4:
@@ -283,6 +304,26 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
         }
     }
 
+    /**
+     * Handle long press of right arrow key
+     */
+    @Override
+    protected void scrollRightLong () {
+        final ViewManager viewManager = this.surface.getViewManager ();
+        switch (viewManager.getActiveID ())
+        {
+            case POLY_SEQUENCER:
+            case DRUM4:
+            case DRUM8:
+                final IView activeView = viewManager.getActive ();
+                if (activeView instanceof AbstractSequencerView)
+                {
+                    final AbstractSequencerView sequencerView = (AbstractSequencerView) activeView;
+                    sequencerView.onRight (ButtonEvent.LONG);
+                }
+                break;
+        }
+    }
 
     /** {@inheritDoc} */
     @SuppressWarnings("rawtypes")
@@ -312,11 +353,11 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
 
             case PIANO:
             case DRUM64:
+            case RAINDROPS:
                 // Not used
                 break;
 
             case SEQUENCER:
-            case RAINDROPS:
             case POLY_SEQUENCER:
             case DRUM:
             case DRUM4:

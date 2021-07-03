@@ -60,11 +60,23 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
         this.notifySelection = notifySelection;
     }
 
-
     /** {@inheritDoc} */
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
+        if (event == ButtonEvent.LONG) {
+            switch (this.direction) {
+                case LEFT:
+                    this.scrollLeftLong();
+                    break;
+                case RIGHT:
+                    this.scrollRightLong();
+                    break;
+                default:
+                    return;
+            }
+        }
+
         if (event != ButtonEvent.DOWN)
             return;
 
@@ -118,6 +130,7 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
     }
 
 
+
     /**
      * Update the states of the arrow buttons. Override to update arrow states.
      */
@@ -130,6 +143,10 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
         this.canScrollDown = mode != null && mode.hasPreviousItemPage ();
     }
 
+    /**
+     * Long Scroll left event place holder method
+     */
+    protected void scrollLeftLong () { }
 
     /**
      * Scroll left. Tracks, devices or parameter bank items.
@@ -141,6 +158,10 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
             activeMode.selectPreviousItem ();
     }
 
+    /**
+     * Long Scroll right event place holder method
+     */
+    protected void scrollRightLong () { }
 
     /**
      * Scroll right. Tracks, devices or parameter bank items.
