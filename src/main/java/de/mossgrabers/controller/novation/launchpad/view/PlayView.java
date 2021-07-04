@@ -113,20 +113,22 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
                 this.scales.nextScaleLayout ();
                 name = this.scales.getScaleLayout ().getName ();
                 this.surface.getConfiguration ().setScaleLayout (name);
-                display.notify (name);
+                display.notify ("Layout " + name);
                 break;
             case SCENE2:
                 this.scales.prevScaleLayout ();
                 name = this.scales.getScaleLayout ().getName ();
                 this.surface.getConfiguration ().setScaleLayout (name);
-                display.notify (name);
+                display.notify ("Layout " + name);
                 break;
             case SCENE4:
                 this.playControls = !this.playControls;
                 this.setBlockedNotes (this.playControls ? 8 : 0);
+                display.notify ("Expression Bar " + (this.playControls ? "Enabled" : "Disabled" ) );
                 break;
             case SCENE5:
                 this.activatePreferredView (Views.CHORDS);
+                display.notify( "Chord Mode" );
                 // Do not update note map!
                 return;
             case SCENE6:
@@ -139,13 +141,13 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
                 this.scales.setScaleOffset (this.scales.getScaleOffset () + 1);
                 name = Scales.BASES.get (this.scales.getScaleOffset ());
                 this.surface.getConfiguration ().setScaleBase (name);
-                display.notify (name);
+                display.notify ("Scale " + name);
                 break;
             case SCENE8:
                 this.scales.setScaleOffset (this.scales.getScaleOffset () - 1);
                 name = Scales.BASES.get (this.scales.getScaleOffset ());
                 this.surface.getConfiguration ().setScaleBase (name);
-                display.notify (name);
+                display.notify ("Scale " + name);
                 break;
             default:
                 // Intentionally empty
@@ -188,7 +190,7 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
             if (pos < 8)
             {
                 final boolean isDown = velocity > 0;
-
+                final ITextDisplay display = this.surface.getTextDisplay ();
                 final IMidiInput midiInput = this.surface.getMidiInput ();
                 switch (pos)
                 {
@@ -214,6 +216,7 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
                         {
                             this.isModulation = pos - 3;
                             midiInput.sendRawMidiEvent (0xB0, 1, MODULATION_INTENSITIES[this.isModulation]);
+                            this.surface.getTextDisplay().notify ("Pitch Bend Level " + (pos - 2));
                         }
                         return;
                 }

@@ -76,6 +76,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     protected ButtonID         buttonMute            = ButtonID.MUTE;
     protected ButtonID         buttonDelete          = ButtonID.DELETE;
 
+    private boolean            fuzzNotification;
 
     /**
      * Constructor.
@@ -90,6 +91,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     protected AbstractDrumView (final String name, final S surface, final IModel model, final int numSequencerLines, final int numPlayLines, final boolean useDawColors)
     {
         this (name, surface, model, numSequencerLines, numPlayLines, GRID_COLUMNS, 128, numSequencerLines * GRID_COLUMNS, true, useDawColors);
+        this.fuzzNotification = false;
     }
 
 
@@ -361,15 +363,16 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         }
         else
         {
-            final int start = this.loopPadPressed < pad ? this.loopPadPressed : pad;
-            final int end = (this.loopPadPressed < pad ? pad : this.loopPadPressed) + 1;
-            final int lengthOfOnePad = this.getLengthOfOnePage (this.sequencerSteps);
-
             // Set a new loop between the 2 selected pads
+            final int start = Math.min(this.loopPadPressed, pad);
+            final int end = (Math.max(this.loopPadPressed, pad)) + 1;
+            final int lengthOfOnePad = this.getLengthOfOnePage (this.sequencerSteps);
+            final int numLoopPages = end - start;
             final int newStart = start * lengthOfOnePad;
             clip.setLoopStart (newStart);
-            clip.setLoopLength ((end - start) * lengthOfOnePad);
+            clip.setLoopLength (numLoopPages * lengthOfOnePad);
             clip.setPlayRange (newStart, (double) end * lengthOfOnePad);
+            this.surface.getDisplay ().notify("Clip length " + numLoopPages);
         }
 
         this.loopPadPressed = -1;
@@ -611,6 +614,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
             if (!primary.hasDrumPads ())
                 return;
 
+            this.model.getHost ().showNotification("Pad "+(playedPad+1)+ " Edit");
             final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
             this.scrollPosition = drumPadBank.getScrollPosition ();
             this.model.getBrowser ().replace (drumPadBank.getItem (playedPad));
@@ -681,6 +685,16 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
 
     /**
+     * Return an alternating string white space string for getting around duplicate notification messages being discarded
+     *
+     * @return A string that is either empty or contains a single space
+     */
+    private String getFuzzerString () {
+        return( (this.fuzzNotification = !this.fuzzNotification) ? " " : "" );
+    }
+
+
+    /**
      * Handle a delete combination.
      *
      * @param playedPad The pad which notes to delete
@@ -690,6 +704,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         this.surface.setTriggerConsumed (this.buttonDelete);
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
         this.getClip ().clearRow (editMidiChannel, this.scales.getDrumOffset () + playedPad);
+        this.model.getHost().showNotification("Pad " + (playedPad+1) + " Deleted" + this.getFuzzerString());
     }
 
 
@@ -701,7 +716,12 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     protected void handleMuteButton (final int playedPad)
     {
         this.surface.setTriggerConsumed (this.buttonMute);
-        this.model.getDrumDevice ().getDrumPadBank ().getItem (playedPad).toggleMute ();
+        IDrumPad pad = this.model.getDrumDevice ().getDrumPadBank ().getItem (playedPad);
+
+        String state = pad.isMute () ? "Off" : "On";
+        pad.toggleMute ();
+
+        this.model.getHost().showNotification("Pad " + (playedPad+1) + " Mute " + state);
     }
 
 
@@ -713,7 +733,12 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     protected void handleSoloButton (final int playedPad)
     {
         this.surface.setTriggerConsumed (this.buttonSolo);
-        this.model.getDrumDevice ().getDrumPadBank ().getItem (playedPad).toggleSolo ();
+        IDrumPad pad = this.model.getDrumDevice ().getDrumPadBank ().getItem (playedPad);
+
+        String state = pad.isSolo () ? "Off" : "On";
+        pad.toggleSolo ();
+
+        this.model.getHost().showNotification("Pad " + (playedPad+1) + " Solo " + state);
     }
 
 
@@ -726,6 +751,8 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     {
         this.surface.setTriggerConsumed (this.buttonSelect);
         this.model.getDrumDevice ().getDrumPadBank ().getItem (playedPad).select ();
+        if( !this.configuration.isAutoSelectDrum () )
+            this.model.getHost().showNotification("Pad " + (playedPad+1) + " Selected" + this.getFuzzerString());
     }
 
 

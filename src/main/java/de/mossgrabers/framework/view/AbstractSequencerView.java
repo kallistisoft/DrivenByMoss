@@ -163,11 +163,13 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
                 start = end-1;
             }
 
+            final int numLoopPages = end - start;
+
             // set clip loop and play length
             clip.setLoopStart ( start * lengthOfOnePage );
-            clip.setLoopLength ( (end-start) * lengthOfOnePage );
-            clip.setPlayRange (0.0, (double) (end-start) * lengthOfOnePage);
-            this.surface.getDisplay().notify ("Clip Length " + (end-start));
+            clip.setLoopLength ( numLoopPages * lengthOfOnePage );
+            clip.setPlayRange ((double) start * lengthOfOnePage, (double) numLoopPages * lengthOfOnePage);
+            this.surface.getDisplay().notify ("Clip Length " + numLoopPages);
         }
     }
 

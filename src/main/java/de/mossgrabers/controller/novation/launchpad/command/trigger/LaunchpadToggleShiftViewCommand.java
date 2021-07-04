@@ -45,6 +45,7 @@ public class LaunchpadToggleShiftViewCommand extends ToggleShiftViewCommand<Laun
         {
             viewManager.restore ();
             this.surface.setTriggerConsumed (ButtonID.SHIFT);
+            this.model.getHost().showNotification( viewManager.getActive().getName() );
             return;
         }
 
