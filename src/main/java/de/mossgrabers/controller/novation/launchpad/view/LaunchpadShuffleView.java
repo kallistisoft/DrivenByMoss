@@ -88,7 +88,7 @@ public class LaunchpadShuffleView extends ShuffleView<LaunchpadControlSurface, L
                         accentRate = 127;
                         break;
                     case 127:
-                        accentRateString = "1/4";
+                        accentRateString = "1/4th";
                         accentRate = 0;
                         break;
                 }
