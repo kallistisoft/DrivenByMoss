@@ -90,21 +90,21 @@ public class GrooveModule extends AbstractModule {
 
             // set accent rate
             case "accentRate":
-                int accentRate;
+                double accentRate;
                 switch (toInteger(value)) {
                     case 0:
-                        accentRate = 0;
+                        accentRate = 0.0;
                         break;
                     case 1:
-                        accentRate = 64;
+                        accentRate = 0.5;
                         break;
                     case 2:
-                        accentRate = 127;
+                        accentRate = 1.0;
                         break;
                     default:
                         throw new IllegalParameterException("value for /groove/accent/rate must be {0,1,2}");
                 }
-                this.groove.getParameter(GrooveParameterID.ACCENT_RATE).setValue (accentRate);
+                this.groove.getParameter(GrooveParameterID.ACCENT_RATE).setNormalizedValue (accentRate);
                 break;
 
             // default throw error
