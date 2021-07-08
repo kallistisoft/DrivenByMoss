@@ -26,6 +26,21 @@ public interface IBrowser extends IObserverManagement
      */
     void addActiveObserver (IValueObserver<Boolean> activeObserver);
 
+    /**
+     * Get title of the popup browser
+     *
+     * @return browser title
+     */
+    String getTitle ();
+
+
+    /**
+     * Set the content type (tab) of the browser
+     *
+     * @param index of the tab to select
+     */
+    void setSelectedContentTypeIndex ( int index );
+
 
     /**
      * Returns true of the browser displays presets.

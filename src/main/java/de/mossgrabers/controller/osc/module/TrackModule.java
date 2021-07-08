@@ -60,6 +60,7 @@ public class TrackModule extends AbstractModule
         return new String []
         {
             "track",
+            "send",
             "master"
         };
     }
@@ -72,15 +73,33 @@ public class TrackModule extends AbstractModule
         switch (command)
         {
             case "track":
-                final String subCommand = getSubCommand (path);
+                final String trackCommand = getSubCommand (path);
                 try
                 {
-                    final int trackNo = Integer.parseInt (subCommand) - 1;
+                    final int trackNo = Integer.parseInt (trackCommand) - 1;
                     this.parseTrackValue (this.model.getCurrentTrackBank ().getItem (trackNo), path, value);
                 }
                 catch (final NumberFormatException ex)
                 {
-                    this.parseTrackCommands (subCommand, path, value);
+                    this.parseTrackCommands (this.model.getCurrentTrackBank (), trackCommand, path, value);
+                }
+                break;
+
+            case "send":
+                final String sendCommand = getSubCommand (path);
+                try
+                {
+                    final int sendNo = Integer.parseInt (sendCommand) - 1;
+                    this.parseTrackValue (this.model.getEffectTrackBank ().getItem (sendNo), path, value);
+                }
+                catch (final NumberFormatException ex)
+                {
+                    // don't allow the bank to be switched for /send/ messages
+                    if( !sendCommand.equals ("toggleBank") )
+                    {
+                        // parse track commands for effects tracks
+                        this.parseTrackCommands (this.model.getEffectTrackBank (), sendCommand, path, value);
+                    }
                 }
                 break;
 
@@ -98,12 +117,24 @@ public class TrackModule extends AbstractModule
     @Override
     public void flush (final boolean dump)
     {
+        // flush audio and instruments tracks
         final ITrackBank trackBank = this.model.getCurrentTrackBank ();
         for (int i = 0; i < trackBank.getPageSize (); i++)
             this.flushTrack (this.writer, "/track/" + (i + 1) + "/", trackBank.getItem (i), dump);
+
+        // flush effects tracks
+        final ITrackBank effectBank = this.model.getEffectTrackBank ();
+        for (int i = 0; i < effectBank.getPageSize (); i++)
+            this.flushTrack (this.writer, "/send/" + (i + 1) + "/", effectBank.getItem (i), dump);
+
+        // flush master track
         this.flushTrack (this.writer, "/master/", this.model.getMasterTrack (), dump);
+
+        // flush selected track
         final ICursorTrack cursorTrack = this.model.getCursorTrack ();
         this.flushTrack (this.writer, "/track/selected/", cursorTrack, dump);
+
+        // flush current bank flags
         this.writer.sendOSC ("/track/toggleBank", this.model.isEffectTrackBankActive () ? 1 : 0, dump);
         this.writer.sendOSC ("/track/hasParent", trackBank.hasParent (), dump);
     }
@@ -194,9 +225,8 @@ public class TrackModule extends AbstractModule
     }
 
 
-    private void parseTrackCommands (final String command, final LinkedList<String> path, final Object value) throws UnknownCommandException, MissingCommandException, IllegalParameterException
+    private void parseTrackCommands (final ITrackBank trackBank, final String command, final LinkedList<String> path, final Object value) throws UnknownCommandException, MissingCommandException, IllegalParameterException
     {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
         switch (command)
         {
             case TAG_INDICATE:
@@ -205,19 +235,19 @@ public class TrackModule extends AbstractModule
                 switch (indicateCommand)
                 {
                     case TAG_VOLUME:
-                        for (int i = 0; i < tb.getPageSize (); i++)
-                            tb.getItem (i).setVolumeIndication (isTrue);
+                        for (int i = 0; i < trackBank.getPageSize (); i++)
+                            trackBank.getItem (i).setVolumeIndication (isTrue);
                         break;
                     case "pan":
-                        for (int i = 0; i < tb.getPageSize (); i++)
-                            tb.getItem (i).setPanIndication (isTrue);
+                        for (int i = 0; i < trackBank.getPageSize (); i++)
+                            trackBank.getItem (i).setPanIndication (isTrue);
                         break;
                     case "send":
                         if (this.model.isEffectTrackBankActive ())
                             return;
                         final int sendIndex = Integer.parseInt (path.get (0)) - 1;
-                        for (int i = 0; i < tb.getPageSize (); i++)
-                            tb.getItem (i).getSendBank ().getItem (sendIndex).setIndication (isTrue);
+                        for (int i = 0; i < trackBank.getPageSize (); i++)
+                            trackBank.getItem (i).getSendBank ().getItem (sendIndex).setIndication (isTrue);
                         break;
                     default:
                         throw new UnknownCommandException (indicateCommand);
@@ -230,15 +260,15 @@ public class TrackModule extends AbstractModule
                 {
                     case TAG_PAGE:
                         if ("+".equals (getSubCommand (path)))
-                            tb.selectNextPage ();
+                            trackBank.selectNextPage ();
                         else // "-"
-                            tb.selectPreviousPage ();
+                            trackBank.selectPreviousPage ();
                         break;
                     case "+":
-                        tb.scrollForwards ();
+                        trackBank.scrollForwards ();
                         break;
                     case "-":
-                        tb.scrollBackwards ();
+                        trackBank.scrollBackwards ();
                         break;
                     default:
                         throw new UnknownCommandException (bankCommand);
@@ -246,25 +276,25 @@ public class TrackModule extends AbstractModule
                 break;
 
             case "+":
-                final Optional<ITrack> selTrack1 = tb.getSelectedItem ();
+                final Optional<ITrack> selTrack1 = trackBank.getSelectedItem ();
                 final int index1 = selTrack1.isEmpty () ? 0 : selTrack1.get ().getIndex () + 1;
-                if (index1 == tb.getPageSize ())
+                if (index1 == trackBank.getPageSize ())
                 {
-                    tb.selectNextPage ();
+                    trackBank.selectNextPage ();
                     return;
                 }
-                tb.getItem (index1).select ();
+                trackBank.getItem (index1).select ();
                 break;
 
             case "-":
-                final Optional<ITrack> selTrack2 = tb.getSelectedItem ();
+                final Optional<ITrack> selTrack2 = trackBank.getSelectedItem ();
                 final int index2 = selTrack2.isEmpty () ? 0 : selTrack2.get ().getIndex () - 1;
                 if (index2 == -1)
                 {
-                    tb.selectPreviousPage ();
+                    trackBank.selectPreviousPage ();
                     return;
                 }
-                tb.getItem (index2).select ();
+                trackBank.getItem (index2).select ();
                 break;
 
             case "add":
@@ -317,7 +347,7 @@ public class TrackModule extends AbstractModule
                 break;
 
             case "parent":
-                tb.selectParent ();
+                trackBank.selectParent ();
                 break;
 
             case TAG_SELECT:

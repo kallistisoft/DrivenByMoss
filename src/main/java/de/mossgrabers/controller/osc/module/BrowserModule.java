@@ -66,11 +66,27 @@ public class BrowserModule extends AbstractModule
             case "tab":
                 if (!browser.isActive ())
                     return;
-                final String subCmd = getSubCommand (path);
-                if ("+".equals (subCmd))
-                    browser.nextContentType ();
-                else if ("-".equals (subCmd))
-                    browser.previousContentType ();
+
+                if( value != null )
+                {
+                    final String deviceTab = value.toString().toLowerCase ();
+                    final String[] contentTypes = browser.getContentTypeNames ();
+                    for (int i = 0; i < contentTypes.length; i++) {
+                        final String tabName = contentTypes[i];
+                        if (tabName.toLowerCase().equals (deviceTab)) {
+                            browser.setSelectedContentTypeIndex (i);
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    final String subCmd = getSubCommand(path);
+                    if ("+".equals(subCmd))
+                        browser.nextContentType();
+                    else if ("-".equals(subCmd))
+                        browser.previousContentType();
+                }
                 break;
 
             case "device":
