@@ -235,13 +235,23 @@ public abstract class AbstractTextDisplay implements ITextDisplay
         return this;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void notify (final String message, final boolean dump)
+    {
+       this.notify (message);
+    }
 
     /** {@inheritDoc} */
     @Override
     public void notify (final String message)
     {
-        if (message != null)
+        if (message != null) {
+            // display on hardware display
             this.notifyOnDisplay (message);
+            // display on DAW as-per the method documentation
+            this.host.showNotification (message);
+        }
     }
 
 

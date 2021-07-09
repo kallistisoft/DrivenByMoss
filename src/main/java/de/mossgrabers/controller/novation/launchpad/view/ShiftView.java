@@ -27,7 +27,6 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadConfiguration>
 {
     private static final String TAG_ACTIVE = "Active";
-    private boolean fuzzNotification;
 
     /**
      * Constructor.
@@ -38,7 +37,6 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
     public ShiftView (final LaunchpadControlSurface surface, final IModel model)
     {
         super ("Shift", surface, model);
-        this.fuzzNotification = false;
     }
 
 
@@ -177,15 +175,6 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
             padGrid.light (i, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
     }
 
-    /**
-     * Return an alternating string white space string for getting around duplicate notification messages being discarded
-     *
-     * @return A string that is either empty or contains a single space
-     */
-    private String getFuzzerString () {
-        return( (this.fuzzNotification = !this.fuzzNotification) ? " " : "" );
-    }
-
     /** {@inheritDoc} */
     @Override
     public void onGridNote (final int note, final int velocity)
@@ -207,12 +196,12 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
             case 43:
                 final int newClipLength = note - 36;
                 configuration.setNewClipLength (newClipLength);
-                this.surface.getDisplay ().notify ("New clip length: " + AbstractConfiguration.getNewClipLengthValue (newClipLength) + this.getFuzzerString () );
+                this.surface.getDisplay ().notify ("New clip length: " + AbstractConfiguration.getNewClipLengthValue (newClipLength), true);
                 return;
 
             case 51:
                 this.model.getCurrentTrackBank ().stop ();
-                this.surface.getDisplay ().notify ("Stop all clips" + this.getFuzzerString () );
+                this.surface.getDisplay ().notify ("Stop all clips", true);
                 break;
 
             case 87:
@@ -301,15 +290,15 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 break;
             case 93:
                 this.simulateShiftedButtonPress (ButtonID.METRONOME);
-                this.surface.getDisplay ().notify ("Tap Tempo" + this.getFuzzerString () );
+                this.surface.getDisplay ().notify ("Tap Tempo", true);
                 break;
             case 84:
                 this.simulateButtonPress (ButtonID.UNDO);
-                this.surface.getDisplay ().notify ("Undo" + this.getFuzzerString () );
+                this.surface.getDisplay ().notify ("Undo", true);
                 break;
             case 85:
                 this.simulateShiftedButtonPress (ButtonID.UNDO);
-                this.surface.getDisplay ().notify ("Redo" + this.getFuzzerString () );
+                this.surface.getDisplay ().notify ("Redo", true);
                 break;
             case 76:
                 configuration.toggleDeleteModeActive ();
@@ -324,7 +313,7 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 break;
             case 68:
                 this.simulateButtonPress (ButtonID.QUANTIZE);
-                this.surface.getDisplay ().notify ("Quantize" + this.getFuzzerString () );
+                this.surface.getDisplay ().notify ("Quantize", true);
                 break;
             case 60:
                 configuration.toggleDuplicateModeActive ();
@@ -332,7 +321,7 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 break;
             case 61:
                 this.simulateShiftedButtonPress (ButtonID.DUPLICATE);
-                this.surface.getDisplay ().notify ("Double" + this.getFuzzerString () );
+                this.surface.getDisplay ().notify ("Double", true);
                 break;
             case 52:
                 this.simulateButtonPress (ButtonID.PLAY);
@@ -341,11 +330,11 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
                 break;
             case 53:
                 this.simulateShiftedButtonPress (ButtonID.PLAY);
-                this.surface.getDisplay ().notify ("New" + this.getFuzzerString () );
+                this.surface.getDisplay ().notify ("New", true);
                 break;
             case 44:
                 this.simulateButtonPress (ButtonID.RECORD);
-                this.surface.getDisplay ().notify ("Arranger record" + this.getFuzzerString () );
+                this.surface.getDisplay ().notify ("Arranger record", true);
                 break;
             case 45:
                 this.simulateShiftedButtonPress (ButtonID.RECORD);
@@ -436,13 +425,13 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
     private void setPeriod (final int index)
     {
         this.surface.getConfiguration ().setNoteRepeatPeriod (Resolution.values ()[index]);
-        this.surface.scheduleTask ( () -> this.surface.getDisplay ().notify ("Period: " + Resolution.getNameAt (index) + this.getFuzzerString () ), 100);
+        this.surface.scheduleTask ( () -> this.surface.getDisplay ().notify ("Period: " + Resolution.getNameAt (index), true), 100);
     }
 
 
     private void setNoteLength (final int index)
     {
         this.surface.getConfiguration ().setNoteRepeatLength (Resolution.values ()[index]);
-        this.surface.scheduleTask ( () -> this.surface.getDisplay ().notify ("Note Length: " + Resolution.getNameAt (index) + this.getFuzzerString () ), 100);
+        this.surface.scheduleTask ( () -> this.surface.getDisplay ().notify ("Note Length: " + Resolution.getNameAt (index), true), 100);
     }
 }

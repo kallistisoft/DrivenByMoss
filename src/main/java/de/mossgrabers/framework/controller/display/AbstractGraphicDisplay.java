@@ -123,6 +123,12 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void notify (final String message, final boolean dump)
+    {
+        this.notify (message);
+    }
 
     /** {@inheritDoc} */
     @Override

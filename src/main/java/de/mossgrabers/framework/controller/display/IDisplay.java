@@ -11,13 +11,22 @@ package de.mossgrabers.framework.controller.display;
  */
 public interface IDisplay
 {
+
+
+    /**
+     * Displays a notification message on the display and in the DAW, with additional dump parameter
+     *
+     * @param message The message to display
+     * @param dump Force the message to display if true, otherwise filter duplicate messages
+     */
+    void notify (final String message, final boolean dump);
+
     /**
      * Displays a notification message on the display and in the DAW.
      *
      * @param message The message to display
      */
     void notify (final String message);
-
 
     /**
      * Cancels the display of a notification message.

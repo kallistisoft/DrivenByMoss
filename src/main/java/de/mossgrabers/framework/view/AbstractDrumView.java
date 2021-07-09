@@ -76,8 +76,6 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     protected ButtonID         buttonMute            = ButtonID.MUTE;
     protected ButtonID         buttonDelete          = ButtonID.DELETE;
 
-    private boolean            fuzzNotification;
-
     /**
      * Constructor.
      *
@@ -91,7 +89,6 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     protected AbstractDrumView (final String name, final S surface, final IModel model, final int numSequencerLines, final int numPlayLines, final boolean useDawColors)
     {
         this (name, surface, model, numSequencerLines, numPlayLines, GRID_COLUMNS, 128, numSequencerLines * GRID_COLUMNS, true, useDawColors);
-        this.fuzzNotification = false;
     }
 
 
@@ -685,16 +682,6 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
 
 
     /**
-     * Return an alternating string white space string for getting around duplicate notification messages being discarded
-     *
-     * @return A string that is either empty or contains a single space
-     */
-    private String getFuzzerString () {
-        return( (this.fuzzNotification = !this.fuzzNotification) ? " " : "" );
-    }
-
-
-    /**
      * Handle a delete combination.
      *
      * @param playedPad The pad which notes to delete
@@ -704,7 +691,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         this.surface.setTriggerConsumed (this.buttonDelete);
         final int editMidiChannel = this.configuration.getMidiEditChannel ();
         this.getClip ().clearRow (editMidiChannel, this.scales.getDrumOffset () + playedPad);
-        this.model.getHost().showNotification("Pad " + (playedPad+1) + " Deleted" + this.getFuzzerString());
+        this.model.getHost().showNotification("Pad " + (playedPad+1) + " Deleted");
     }
 
 
@@ -752,7 +739,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         this.surface.setTriggerConsumed (this.buttonSelect);
         this.model.getDrumDevice ().getDrumPadBank ().getItem (playedPad).select ();
         if( !this.configuration.isAutoSelectDrum () )
-            this.model.getHost().showNotification("Pad " + (playedPad+1) + " Selected" + this.getFuzzerString());
+            this.model.getHost().showNotification("Pad " + (playedPad+1) + " Selected");
     }
 
 

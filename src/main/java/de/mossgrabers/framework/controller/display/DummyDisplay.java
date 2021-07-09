@@ -125,15 +125,21 @@ public class DummyDisplay implements ITextDisplay
         // Intentionally empty
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void notify (final String message, final boolean dump)
+    {
+        if (message != null && (dump || !message.equals (this.lastMessage)))
+            this.host.showNotification (message);
+
+        this.lastMessage = message;
+    }
 
     /** {@inheritDoc} */
     @Override
     public void notify (final String message)
     {
-        if (message != null && !message.equals (this.lastMessage))
-            this.host.showNotification (message);
-
-        this.lastMessage = message;
+        this.notify (message,false);
     }
 
 
