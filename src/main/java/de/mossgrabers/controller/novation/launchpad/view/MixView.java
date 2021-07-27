@@ -94,12 +94,14 @@ public class MixView extends AbstractView<LaunchpadControlSurface, LaunchpadConf
                 padGrid.light (68 + i, send2ColorID);
                 // Stop
                 padGrid.light (60 + i, this.surface.isPressed (ButtonID.get (ButtonID.PAD25, i)) ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED : LaunchpadColorManager.LAUNCHPAD_COLOR_ROSE);
-                // Mute
-                padGrid.light (52 + i, track.isMute () ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO : LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_HI);
+
+                // Record Arm
+                padGrid.light (52 + i, track.isRecArm () ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO);
                 // Solo
                 padGrid.light (44 + i, track.isSolo () ? LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_MD);
-                // Record Arm
-                padGrid.light (36 + i, track.isRecArm () ? LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO);
+                // Mute
+                padGrid.light (36 + i, track.isMute () ? LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_HI: LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO );
+
             }
             else
             {
@@ -134,49 +136,53 @@ public class MixView extends AbstractView<LaunchpadControlSurface, LaunchpadConf
         {
             case 7:
                 this.faderMode = FaderMode.VOLUME;
-                display.notify ("Volume");
+                display.notify ("Track " + (track.getPosition () + 1) + ": Volume", true);
                 this.selectTrack (track);
                 break;
 
             case 6:
                 this.faderMode = FaderMode.PAN;
-                display.notify ("Panorama");
+                display.notify ("Track " + (track.getPosition () + 1) + ": Panorama", true);
                 this.selectTrack (track);
                 break;
 
             case 5:
                 this.faderMode = FaderMode.SEND1;
                 final ISend send1 = track.getSendBank ().getItem (0);
-                display.notify ("Send 1: " + (send1.doesExist () ? send1.getName () : "None"));
+                display.notify ("Track " + (track.getPosition () + 1) + ": Send 1: " + (send1.doesExist () ? send1.getName () : "None"), true);
                 this.selectTrack (track);
                 break;
 
             case 4:
                 this.faderMode = FaderMode.SEND2;
                 final ISend send2 = track.getSendBank ().getItem (1);
-                display.notify ("Send 2: " + (send2.doesExist () ? send2.getName () : "None"));
+                display.notify ("Track " + (track.getPosition () + 1) + ": Send 2: " + (send2.doesExist () ? send2.getName () : "None"), true);
                 this.selectTrack (track);
                 break;
 
             case 3:
                 track.stop ();
-                display.notify ("Stop clip");
+                display.notify ("Track " + (track.getPosition () + 1) + ": Stop clips", true);
                 break;
 
             case 2:
-                track.toggleMute ();
-                display.notify ("Mute");
+                final String recState = track.isRecArm () ? "Off" : "On";
+                track.toggleRecArm ();
+                display.notify ("Track " + (track.getPosition () + 1) + ": Rec Arm " + recState, true);
                 break;
 
             case 1:
+                final String soloState = track.isSolo () ? "Off" : "On";
                 track.toggleSolo ();
-                display.notify ("Solo");
+                display.notify ("Track " + (track.getPosition () + 1) + ": Solo " + soloState, true);
                 break;
 
             case 0:
-                track.toggleRecArm ();
-                display.notify ("Rec Arm");
+                final String muteState = track.isMute () ? "Off" : "On";
+                track.toggleMute ();
+                display.notify ("Track " + (track.getPosition () + 1) + ": Mute " + muteState, true);
                 break;
+
 
             default:
                 // Not used
@@ -302,6 +308,6 @@ public class MixView extends AbstractView<LaunchpadControlSurface, LaunchpadConf
         if (track.isSelected ())
             return;
         track.select ();
-        this.surface.getDisplay ().notify (track.getPosition () + 1 + ": " + track.getName ());
+        //this.surface.getDisplay ().notify ("Track " + (track.getPosition () + 1) + ": " + track.getName ());
     }
 }
