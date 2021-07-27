@@ -12,6 +12,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ISlot;
@@ -193,15 +194,44 @@ public class TrackModule extends AbstractModule
             final ISlot slot = slotBank.getItem (i);
             final String clipAddress = trackAddress + "clip/" + (i + 1) + "/";
             
-            boolean forceClipName = false;
-            if( slot.isSelected() == true && !clipAddress.contains("/track/selected/") ) {
+            boolean forceClipDump = false;
+            if( slot.isSelected() && !clipAddress.contains("/track/selected/") ) {
                 if( ! clipAddress.equals(lastSelectedClipAddress) )
-                    forceClipName = true;
+                    forceClipDump = true;
                 lastSelectedClipAddress = clipAddress;
             }
-            
+
+            // output the length of the selected clip
+            if( slot.isSelected() ) {
+                final INoteClip clip = this.model.getCursorClip();
+                final double playStart = clip.getPlayStart();
+                final double playEnd = clip.getPlayEnd();
+                final double loopStart = clip.getLoopStart();
+                final double loopLen = clip.getLoopLength();
+                final boolean isLooping = clip.isLoopEnabled();
+
+                double length = isLooping ? loopLen : (playEnd - playStart);
+
+                if (isLooping && playStart < loopStart)
+                    length += (loopStart - playStart);
+
+                final int numerator = this.model.getTransport().getNumerator();
+
+                if (!slot.hasContent() || !clip.doesExist())
+                    length = 0;
+
+                int bars = (int) (length / (double) numerator);
+                int beats = (int) (length - (bars * numerator)) % 4;
+                String ticks = String.format("%01.2f", ((length - (int) length) * 4.0));
+                if (ticks.equals("4.00")) ticks = "3.99";
+
+                writer.sendOSC(clipAddress + "length", length, dump | forceClipDump);
+                writer.sendOSC(clipAddress + "lengthStr", bars + "." + beats + "." + ticks, dump | forceClipDump);
+            }
+
+            // output the length of the selected clip
             writer.sendOSC (clipAddress + "isSelected", slot.isSelected (), dump);
-            writer.sendOSC (clipAddress + TAG_NAME, slot.getName (), dump|forceClipName);
+            writer.sendOSC (clipAddress + TAG_NAME, slot.getName (), dump|forceClipDump);
             writer.sendOSC (clipAddress + "hasContent", slot.hasContent (), dump);
             writer.sendOSC (clipAddress + "isPlaying", slot.isPlaying (), dump);
             writer.sendOSC (clipAddress + "isRecording", slot.isRecording (), dump);
