@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.novation.launchkey.mini;
@@ -48,6 +48,14 @@ public class LaunchkeyMiniMk3ControllerDefinition extends DefaultControllerDefin
                 {
                     "MIDIOUT2 (Launchkey Mini MK3)"
                 }));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "MIDIIN2 (Launchkey Mini MK3 MID",
+                    "Launchkey Mini MK3 MIDI"
+                }, new String []
+                {
+                    "MIDIOUT2 (Launchkey Mini MK3 MI"
+                }));
                 break;
 
             case MAC:
@@ -77,6 +85,14 @@ public class LaunchkeyMiniMk3ControllerDefinition extends DefaultControllerDefin
                 }, new String []
                 {
                     "MK3 [hw:2,0,1]"
+                }));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
+                {
+                    "Launchkey Mini MK3 MIDI 2",
+                    "Launchkey Mini MK3 MIDI 1"
+                }, new String []
+                {
+                    "Launchkey Mini MK3 MIDI 2"
                 }));
                 break;
         }

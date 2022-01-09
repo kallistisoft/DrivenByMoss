@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.akai.fire.view;
@@ -9,7 +9,9 @@ import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.INoteClip;
+import de.mossgrabers.framework.daw.StepState;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPolySequencerView;
 
@@ -140,5 +142,23 @@ public class PolySequencerView extends AbstractPolySequencerView<FireControlSurf
             this.onOctaveUp (ButtonEvent.DOWN);
         else
             this.onOctaveDown (ButtonEvent.DOWN);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected boolean handleSequencerAreaButtonCombinations (final INoteClip clip, final int channel, final int step)
+    {
+        if (this.surface.getModeManager ().isActive (Modes.NOTE))
+        {
+            for (int row = 0; row < 128; row++)
+            {
+                if (clip.getStep (channel, step, row).getState () == StepState.START)
+                    this.editNote (clip, channel, step, row, true);
+            }
+            return true;
+        }
+
+        return super.handleSequencerAreaButtonCombinations (clip, channel, step);
     }
 }

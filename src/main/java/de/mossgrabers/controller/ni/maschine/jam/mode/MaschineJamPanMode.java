@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ni.maschine.jam.mode;
@@ -11,7 +11,7 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.mode.track.PanMode;
+import de.mossgrabers.framework.mode.track.TrackPanMode;
 
 import java.util.Optional;
 
@@ -21,7 +21,7 @@ import java.util.Optional;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class MaschineJamPanMode extends PanMode<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamMode
+public class MaschineJamPanMode extends TrackPanMode<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamMode
 {
     private static final FaderConfig FADER_OFF = new FaderConfig (FaderConfig.TYPE_DOT, 0, 0);
 

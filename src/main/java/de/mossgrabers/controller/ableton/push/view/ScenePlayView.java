@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ableton.push.view;
@@ -25,7 +25,7 @@ import de.mossgrabers.framework.view.AbstractSequencerView;
  */
 public class ScenePlayView extends AbstractView<PushControlSurface, PushConfiguration>
 {
-    private ISceneBank sceneBank;
+    private final ISceneBank sceneBank;
 
 
     /**

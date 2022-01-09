@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.bitwig.framework.daw.data;
@@ -209,7 +209,7 @@ public class SlotImpl extends AbstractItemImpl implements ISlot
 
     /** {@inheritDoc} */
     @Override
-    public void record ()
+    public void startRecording ()
     {
         this.slot.record ();
     }

@@ -1,9 +1,10 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.controller;
 
+import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
@@ -25,13 +26,14 @@ public interface ISetupFactory
     /**
      * Create a new model.
      *
+     * @param configuration The configuration
      * @param colorManager The color manager
      * @param valueChanger The value changer
      * @param scales The scales object
      * @param modelSetup The configuration parameters for the model
      * @return The model
      */
-    IModel createModel (final ColorManager colorManager, final IValueChanger valueChanger, final Scales scales, final ModelSetup modelSetup);
+    IModel createModel (Configuration configuration, ColorManager colorManager, IValueChanger valueChanger, Scales scales, ModelSetup modelSetup);
 
 
     /**

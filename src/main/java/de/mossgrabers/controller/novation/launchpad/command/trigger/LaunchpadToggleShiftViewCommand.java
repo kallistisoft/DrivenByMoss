@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.novation.launchpad.command.trigger;
@@ -15,7 +15,7 @@ import de.mossgrabers.framework.view.Views;
 
 
 /**
- * Command to show/hide the shift view. Additionally, returns to previous .
+ * Command to show/hide the shift view. Additionally, returns to previous view.
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
@@ -37,9 +37,6 @@ public class LaunchpadToggleShiftViewCommand extends ToggleShiftViewCommand<Laun
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        if (event == ButtonEvent.LONG)
-            return;
-
         final ViewManager viewManager = this.surface.getViewManager ();
         if (event == ButtonEvent.DOWN && (viewManager.isActive (Views.TEMPO) || viewManager.isActive (Views.SHUFFLE)))
         {

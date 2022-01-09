@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw.data.empty;
@@ -174,6 +174,22 @@ public class EmptyChannel extends EmptyItem implements IChannel
 
     /** {@inheritDoc} */
     @Override
+    public int getVuPeakLeft ()
+    {
+        return 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getVuPeakRight ()
+    {
+        return 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void enableObservers (final boolean enable)
     {
         // Intentionally empty
@@ -313,6 +329,14 @@ public class EmptyChannel extends EmptyItem implements IChannel
     public void toggleSolo ()
     {
         // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isMutedBySolo ()
+    {
+        return false;
     }
 
 

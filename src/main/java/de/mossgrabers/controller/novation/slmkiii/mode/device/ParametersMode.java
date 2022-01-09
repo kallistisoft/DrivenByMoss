@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.novation.slmkiii.mode.device;
@@ -65,17 +65,13 @@ public class ParametersMode extends AbstractParametersMode<IItem>
      *
      * @param showDevices True to show devices otherwise parameters
      */
-    @SuppressWarnings(
-    {
-        "rawtypes",
-        "unchecked"
-    })
+    @SuppressWarnings("unchecked")
     public final void setShowDevices (final boolean showDevices)
     {
         this.showDevices = showDevices;
 
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        this.switchBanks ((IBank) (this.showDevices ? cursorDevice.getDeviceBank () : cursorDevice.getParameterBank ()));
+        this.switchBanks ((IBank<IItem>) (this.showDevices ? cursorDevice.getDeviceBank () : cursorDevice.getParameterBank ()));
     }
 
 

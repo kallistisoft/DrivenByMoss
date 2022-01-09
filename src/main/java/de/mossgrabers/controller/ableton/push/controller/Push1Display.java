@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ableton.push.controller;
@@ -41,6 +41,10 @@ public class Push1Display extends AbstractTextDisplay
     public static final String     DEGREE        = Character.toString ((char) 9);
     /** Push character for a right arrow. */
     public static final String     RIGHT_ARROW   = Character.toString ((char) 30);
+    /** Push character for a folder icon. */
+    public static final String     FOLDER        = Character.toString ((char) 7);
+    /** Push character for three rows. */
+    public static final String     THREE_ROWS    = Character.toString ((char) 2);
 
     private static final String [] SYSEX_MESSAGE =
     {
@@ -50,7 +54,7 @@ public class Push1Display extends AbstractTextDisplay
         "F0 47 7F 15 1B 00 45 00 "
     };
 
-    private int                    maxParameterValue;
+    private final int              maxParameterValue;
 
 
     /**

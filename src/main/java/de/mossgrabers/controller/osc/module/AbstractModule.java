@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.osc.module;
@@ -91,7 +91,7 @@ public abstract class AbstractModule implements IModule
      */
     protected static boolean isTrigger (final Object value)
     {
-        return value == null || value instanceof Number && ((Number) value).doubleValue () > 0;
+        return value == null || value instanceof final Number number && number.doubleValue () > 0;
     }
 
 
@@ -121,8 +121,8 @@ public abstract class AbstractModule implements IModule
     {
         if (value == null)
             return defaultValue;
-        if (value instanceof Number)
-            return ((Number) value).doubleValue ();
+        if (value instanceof final Number number)
+            return number.doubleValue ();
         throw new IllegalParameterException ("Parameter is not a Number");
     }
 
@@ -138,8 +138,8 @@ public abstract class AbstractModule implements IModule
     {
         if (value == null)
             throw new IllegalParameterException ("Number parameter missing");
-        if (value instanceof Number)
-            return ((Number) value).doubleValue ();
+        if (value instanceof final Number number)
+            return number.doubleValue ();
         throw new IllegalParameterException ("Parameter is not a Number");
     }
 

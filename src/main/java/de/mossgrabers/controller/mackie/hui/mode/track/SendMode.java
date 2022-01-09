@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.mackie.hui.mode.track;
@@ -39,7 +39,7 @@ public class SendMode extends AbstractTrackMode
         "SndF"
     };
 
-    private int                    sendIndex;
+    private final int              sendIndex;
 
 
     /**

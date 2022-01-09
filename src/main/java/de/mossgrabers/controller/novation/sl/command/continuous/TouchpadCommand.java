@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.novation.sl.command.continuous;
@@ -17,7 +17,7 @@ import de.mossgrabers.framework.daw.IModel;
  */
 public class TouchpadCommand extends AbstractContinuousCommand<SLControlSurface, SLConfiguration>
 {
-    private boolean isXDirection;
+    private final boolean isXDirection;
 
 
     /**

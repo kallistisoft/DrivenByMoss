@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.generic.controller;
@@ -434,6 +434,14 @@ public enum FlexiCommand
     DEVICE_SCROLL_DEVICES(CommandCategory.DEVICE, "Device: Scroll devices", false),
     DEVICE_SELECT_PREVIOUS_PARAMETER_PAGE(CommandCategory.DEVICE, "Device: Select Previous Parameter Page", true),
     DEVICE_SELECT_NEXT_PARAMETER_PAGE(CommandCategory.DEVICE, "Device: Select Next Parameter Page", true),
+    DEVICE_SELECT_PARAMETER_PAGE_1(CommandCategory.DEVICE, "Device: Select Parameter Page 1", true),
+    DEVICE_SELECT_PARAMETER_PAGE_2(CommandCategory.DEVICE, "Device: Select Parameter Page 2", true),
+    DEVICE_SELECT_PARAMETER_PAGE_3(CommandCategory.DEVICE, "Device: Select Parameter Page 3", true),
+    DEVICE_SELECT_PARAMETER_PAGE_4(CommandCategory.DEVICE, "Device: Select Parameter Page 4", true),
+    DEVICE_SELECT_PARAMETER_PAGE_5(CommandCategory.DEVICE, "Device: Select Parameter Page 5", true),
+    DEVICE_SELECT_PARAMETER_PAGE_6(CommandCategory.DEVICE, "Device: Select Parameter Page 6", true),
+    DEVICE_SELECT_PARAMETER_PAGE_7(CommandCategory.DEVICE, "Device: Select Parameter Page 7", true),
+    DEVICE_SELECT_PARAMETER_PAGE_8(CommandCategory.DEVICE, "Device: Select Parameter Page 8", true),
     DEVICE_SCROLL_PARAMETER_PAGES(CommandCategory.DEVICE, "Device: Scroll Parameter Pages", false),
     DEVICE_SELECT_PREVIOUS_PARAMETER_BANK(CommandCategory.DEVICE, "Device: Select Previous Parameter Bank", true),
     DEVICE_SELECT_NEXT_PARAMETER_BANK(CommandCategory.DEVICE, "Device: Select Next Parameter Bank", true),
@@ -501,6 +509,7 @@ public enum FlexiCommand
     SCENE_8_LAUNCH_SCENE(CommandCategory.SCENE, "Scene 8: Launch Scene", true),
     SCENE_SELECT_PREVIOUS_BANK(CommandCategory.SCENE, "Scene: Select Previous Bank", true),
     SCENE_SELECT_NEXT_BANK(CommandCategory.SCENE, "Scene: Select Next Bank", true),
+    SCENE_CREATE_SCENE(CommandCategory.SCENE, "Scene: Create Scene", true),
     SCENE_CREATE_SCENE_FROM_PLAYING_CLIPS(CommandCategory.SCENE, "Scene: Create Scene from playing Clips", true),
 
     CLIP_TOGGLE_PIN(CommandCategory.CLIP, "Clip: Toggle Pin", true),
@@ -812,7 +821,6 @@ public enum FlexiCommand
      */
     public static FlexiCommand lookupByName (final String name)
     {
-        final FlexiCommand c = NAME_COMMAND_MAP.get (name);
-        return c == null ? FlexiCommand.OFF : c;
+        return NAME_COMMAND_MAP.getOrDefault (name, FlexiCommand.OFF);
     }
 }

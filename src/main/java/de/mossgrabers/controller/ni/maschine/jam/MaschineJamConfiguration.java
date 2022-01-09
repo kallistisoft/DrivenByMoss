@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ni.maschine.jam;
@@ -85,6 +85,7 @@ public class MaschineJamConfiguration extends AbstractConfiguration
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
         this.activateKnobSpeedSetting (globalSettings);
-        this.activateFootswitchSetting (globalSettings, 0);
+        this.activateFootswitchSetting (globalSettings, 0, "Footswitch (Tip)");
+        this.activateFootswitchSetting (globalSettings, 1, "Footswitch (Ring)");
     }
 }

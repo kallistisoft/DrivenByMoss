@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.mackie.hui.command.trigger;
@@ -17,9 +17,6 @@ import de.mossgrabers.framework.daw.IModel;
  */
 public class AssignableCommand extends FootswitchCommand<HUIControlSurface, HUIConfiguration>
 {
-    private final int index;
-
-
     /**
      * Constructor.
      *
@@ -29,8 +26,7 @@ public class AssignableCommand extends FootswitchCommand<HUIControlSurface, HUIC
      */
     public AssignableCommand (final int index, final IModel model, final HUIControlSurface surface)
     {
-        super (model, surface);
-        this.index = index;
+        super (model, surface, index);
     }
 
 

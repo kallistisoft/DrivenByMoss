@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.novation.launchkey.mini.controller;
@@ -53,17 +53,17 @@ public class LaunchkeyMiniMk3ControlSurface extends AbstractControlSurface<Launc
     public static final int         LAUNCHKEY_RECORD      = 0x75;
 
     // Knob Modes
-    public static final int         KNOB_MODE_CUSTOM      = 0;
     public static final int         KNOB_MODE_VOLUME      = 1;
     public static final int         KNOB_MODE_PARAMS      = 2;
     public static final int         KNOB_MODE_PAN         = 3;
     public static final int         KNOB_MODE_SEND1       = 4;
     public static final int         KNOB_MODE_SEND2       = 5;
+    public static final int         KNOB_MODE_CUSTOM      = 6;
 
     // Pad Modes
-    public static final int         PAD_MODE_CUSTOM       = 0;
     public static final int         PAD_MODE_DRUM         = 1;
     public static final int         PAD_MODE_SESSION      = 2;
+    public static final int         PAD_MODE_CUSTOM       = 5;
 
     private final ContinuousCommand pageAdjuster;
     private int                     lastPrgChange         = -1;

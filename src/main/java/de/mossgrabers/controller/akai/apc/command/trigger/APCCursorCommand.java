@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.akai.apc.command.trigger;
@@ -10,6 +10,7 @@ import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
@@ -29,6 +30,8 @@ public class APCCursorCommand extends CursorCommand<APCControlSurface, APCConfig
     public APCCursorCommand (final Direction direction, final IModel model, final APCControlSurface surface)
     {
         super (direction, model, surface, false);
+
+        this.triggerEvent = ButtonEvent.UP;
     }
 
 

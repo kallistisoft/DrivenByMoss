@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.osc;
@@ -26,7 +26,7 @@ import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.display.DummyDisplay;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.constants.DeviceID;
@@ -68,7 +68,7 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
         super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new OSCColorManager ();
-        this.valueChanger = new DefaultValueChanger (128, 1);
+        this.valueChanger = new TwosComplementValueChanger (128, 1);
         this.configuration = new OSCConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
@@ -110,7 +110,7 @@ public class OSCControllerSetup extends AbstractControllerSetup<IControlSurface<
         ms.setNumUserPageSize (bankPageSize);
         ms.setNumMarkers (bankPageSize);
 
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
     }
 
 

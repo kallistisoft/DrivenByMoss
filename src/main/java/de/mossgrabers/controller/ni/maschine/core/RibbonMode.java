@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ni.maschine.core;
@@ -92,7 +92,6 @@ public enum RibbonMode
      */
     public static RibbonMode lookupByName (final String name)
     {
-        final RibbonMode c = NAME_MODE_MAP.get (name);
-        return c == null ? RibbonMode.values ()[0] : c;
+        return NAME_MODE_MAP.getOrDefault (name, RibbonMode.PITCH_DOWN);
     }
 }

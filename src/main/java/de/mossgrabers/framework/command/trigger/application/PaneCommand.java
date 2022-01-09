@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.command.trigger.application;
@@ -36,7 +36,7 @@ public class PaneCommand<S extends IControlSurface<C>, C extends Configuration> 
     }
 
 
-    private Panels panel;
+    private final Panels panel;
 
 
     /**
@@ -83,7 +83,7 @@ public class PaneCommand<S extends IControlSurface<C>, C extends Configuration> 
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        if (event == ButtonEvent.DOWN && this.panel == Panels.DEVICE)
+        if (event == ButtonEvent.DOWN)
             this.model.getApplication ().toggleDevices ();
     }
 }

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ableton.push.mode.track;
@@ -15,9 +15,11 @@ import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.Capability;
+import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -116,20 +118,23 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
                 return;
             }
 
-            final Optional<ITrack> selTrack = tb.getSelectedItem ();
-            if (selTrack.isPresent () && selTrack.get ().getIndex () == index)
+            if (!track.isSelected ())
             {
-                final ITrack t = selTrack.get ();
+                track.select ();
+                return;
+            }
 
-                // If it is a group display child channels of group, otherwise jump into device
-                // mode
-                if (t.isGroup ())
-                    t.enter ();
+            // If it is a group display child channels of group, otherwise jump into device
+            // mode
+            if (track.isGroup ())
+            {
+                if (this.surface.isShiftPressed ())
+                    track.toggleGroupExpanded ();
                 else
-                    this.surface.getButton (ButtonID.DEVICE).trigger (ButtonEvent.DOWN);
+                    track.enter ();
             }
             else
-                track.select ();
+                this.surface.getButton (ButtonID.DEVICE).trigger (ButtonEvent.DOWN);
             return;
         }
 
@@ -348,7 +353,10 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
         {
             final boolean isSel = i == selIndex;
             final ITrack t = tb.getItem (i);
-            final String n = StringUtils.shortenAndFixASCII (t.getName (), isSel ? 7 : 8);
+            String trackName = t.getName ();
+            if (t.doesExist () && t.isGroup ())
+                trackName = (t.isGroupExpanded () ? Push1Display.THREE_ROWS : Push1Display.FOLDER) + trackName;
+            final String n = StringUtils.shortenAndFixASCII (trackName, isSel ? 7 : 8);
             d.setCell (3, i, isSel ? Push1Display.SELECT_ARROW + n : n);
         }
     }
@@ -364,6 +372,7 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
         final IValueChanger valueChanger = this.model.getValueChanger ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final PushConfiguration config = this.surface.getConfiguration ();
+        final ICursorTrack cursorTrack = this.model.getCursorTrack ();
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getItem (i);
@@ -374,7 +383,7 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
             final boolean enableVUMeters = config.isEnableVUMeters ();
             final int vuR = valueChanger.toDisplayValue (enableVUMeters ? t.getVuRight () : 0);
             final int vuL = valueChanger.toDisplayValue (enableVUMeters ? t.getVuLeft () : 0);
-            display.addChannelElement (selectedMenu, topMenu, isTopMenuOn, t.doesExist () ? t.getName (12) : "", t.getType (), t.getColor (), t.isSelected (), valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), isPan && this.isKnobTouched[i] ? t.getPanStr (8) : "", vuL, vuR, t.isMute (), t.isSolo (), t.isRecArm (), t.isActivated (), crossfadeMode);
+            display.addChannelElement (selectedMenu, topMenu, isTopMenuOn, t.doesExist () ? t.getName (12) : "", this.updateType (t), t.getColor (), t.isSelected (), valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), isPan && this.isKnobTouched[i] ? t.getPanStr (8) : "", vuL, vuR, t.isMute (), t.isSolo (), t.isRecArm (), t.isActivated (), crossfadeMode, t.isSelected () && cursorTrack.isPinned ());
         }
     }
 
@@ -483,5 +492,18 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
         if (this.model.getHost ().supports (Capability.HAS_CROSSFADER))
             return (int) Math.round (this.model.getValueChanger ().toNormalizedValue (track.getCrossfadeParameter ().getValue ()) * 2.0);
         return -1;
+    }
+
+
+    /**
+     * Update the group type, if it is an opened group.
+     *
+     * @param track The track for which to get the type
+     * @return The type
+     */
+    protected ChannelType updateType (final ITrack track)
+    {
+        final ChannelType type = track.getType ();
+        return type == ChannelType.GROUP && track.isGroupExpanded () ? ChannelType.GROUP_OPEN : type;
     }
 }

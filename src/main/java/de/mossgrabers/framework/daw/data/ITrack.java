@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw.data;
@@ -23,6 +23,34 @@ public interface ITrack extends IChannel
      * @return True if the track is a group
      */
     boolean isGroup ();
+
+
+    /**
+     * Is the track a group and if yes, is it expanded?
+     *
+     * @return True if expanded
+     */
+    boolean isGroupExpanded ();
+
+
+    /**
+     * Select the item. If it is already selected and is a group the expanded state is toggled.
+     */
+    default void selectOrExpandGroup ()
+    {
+        if (!this.doesExist ())
+            return;
+        if (!this.isSelected ())
+            this.select ();
+        else if (this.isGroup ())
+            this.toggleGroupExpanded ();
+    }
+
+
+    /**
+     * Expand or collapse the group.
+     */
+    void toggleGroupExpanded ();
 
 
     /**
@@ -226,4 +254,12 @@ public interface ITrack extends IChannel
      * Add an equalizer device to this track.
      */
     void addEqualizerDevice ();
+
+
+    /**
+     * Does the track contain a drum device?
+     *
+     * @return True if it contains a drum device
+     */
+    boolean hasDrumDevice ();
 }

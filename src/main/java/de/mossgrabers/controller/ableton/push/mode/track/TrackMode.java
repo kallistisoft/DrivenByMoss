@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ableton.push.mode.track;
@@ -14,6 +14,7 @@ import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
@@ -98,6 +99,8 @@ public class TrackMode extends AbstractTrackMode
 
         this.updateMenuItems (0);
 
+        final ICursorTrack cursorTrack = this.model.getCursorTrack ();
+
         final PushConfiguration config = this.surface.getConfiguration ();
         for (int i = 0; i < 8; i++)
         {
@@ -120,7 +123,7 @@ public class TrackMode extends AbstractTrackMode
                 final boolean enableVUMeters = config.isEnableVUMeters ();
                 final int vuR = valueChanger.toDisplayValue (enableVUMeters ? t.getVuRight () : 0);
                 final int vuL = valueChanger.toDisplayValue (enableVUMeters ? t.getVuLeft () : 0);
-                display.addChannelElement (topMenu, topMenuSelected, bottomMenu, t.getType (), bottomMenuColor, isBottomMenuOn, valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), this.isKnobTouched[0] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), this.isKnobTouched[1] ? t.getPanStr (8) : "", vuL, vuR, t.isMute (), t.isSolo (), t.isRecArm (), t.isActivated (), crossfadeMode);
+                display.addChannelElement (topMenu, topMenuSelected, bottomMenu, this.updateType (t), bottomMenuColor, isBottomMenuOn, valueChanger.toDisplayValue (t.getVolume ()), valueChanger.toDisplayValue (t.getModulatedVolume ()), this.isKnobTouched[0] ? t.getVolumeStr (8) : "", valueChanger.toDisplayValue (t.getPan ()), valueChanger.toDisplayValue (t.getModulatedPan ()), this.isKnobTouched[1] ? t.getPanStr (8) : "", vuL, vuR, t.isMute (), t.isSolo (), t.isRecArm (), t.isActivated (), crossfadeMode, cursorTrack.isPinned ());
             }
             else if (sendsIndex == i)
             {
@@ -142,10 +145,10 @@ public class TrackMode extends AbstractTrackMode
                     }
                     sendData[j] = new SendData ("", "", 0, 0, true);
                 }
-                display.addSendsElement (topMenu, topMenuSelected, bottomMenu, t.getType (), bottomMenuColor, isBottomMenuOn, sendData, true, selTrack == null || selTrack.isActivated (), t.isActivated ());
+                display.addSendsElement (topMenu, topMenuSelected, bottomMenu, this.updateType (t), bottomMenuColor, isBottomMenuOn, sendData, true, selTrack == null || selTrack.isActivated (), t.isActivated ());
             }
             else
-                display.addChannelSelectorElement (topMenu, topMenuSelected, bottomMenu, t.getType (), bottomMenuColor, isBottomMenuOn, t.isActivated ());
+                display.addChannelSelectorElement (topMenu, topMenuSelected, bottomMenu, this.updateType (t), bottomMenuColor, isBottomMenuOn, t.isActivated ());
         }
     }
 }

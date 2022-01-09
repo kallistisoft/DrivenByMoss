@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.bitwig.framework.daw;
@@ -18,6 +18,7 @@ import de.mossgrabers.framework.daw.constants.TransportConstants;
 import de.mossgrabers.framework.daw.data.IParameter;
 import de.mossgrabers.framework.utils.StringUtils;
 
+import com.bitwig.extension.controller.api.BeatTimeFormatter;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.TimeSignatureValue;
 import com.bitwig.extension.controller.api.Transport;
@@ -32,14 +33,17 @@ import java.text.DecimalFormat;
  */
 public class TransportImpl implements ITransport
 {
-    private static final String            ACTION_JUMP_TO_END = "jump_to_end_of_arrangement";
+    private static final String            ACTION_JUMP_TO_END      = "jump_to_end_of_arrangement";
 
-    private static final AutomationMode [] AUTOMATION_MODES   = new AutomationMode []
+    private static final AutomationMode [] AUTOMATION_MODES        = new AutomationMode []
     {
         AutomationMode.LATCH,
         AutomationMode.TOUCH,
         AutomationMode.WRITE
     };
+
+    private static final BeatTimeFormatter BEAT_POSITION_FORMATTER = formatAsBeats (1);
+    private static final BeatTimeFormatter BEAT_LENGTH_FORMATTER   = formatAsBeats (0);
 
     private final ControllerHost           host;
     private final IApplication             application;
@@ -80,9 +84,12 @@ public class TransportImpl implements ITransport
         this.transport.isMetronomeAudibleDuringPreRoll ().markInterested ();
         this.transport.preRoll ().markInterested ();
         this.transport.getPosition ().markInterested ();
+        this.transport.arrangerLoopStart ().markInterested ();
+        this.transport.arrangerLoopDuration ().markInterested ();
         this.transport.clipLauncherPostRecordingAction ().markInterested ();
         this.transport.getClipLauncherPostRecordingTimeOffset ().markInterested ();
         this.transport.defaultLaunchQuantization ().markInterested ();
+        this.transport.isFillModeActive ().markInterested ();
 
         this.crossfadeParameter = new ParameterImpl (valueChanger, this.transport.crossfade ());
         this.metronomeVolumeParameter = new RangedValueImpl ("Metronome Volume", valueChanger, this.transport.metronomeVolume ());
@@ -113,9 +120,12 @@ public class TransportImpl implements ITransport
         Util.setIsSubscribed (this.transport.isMetronomeAudibleDuringPreRoll (), enable);
         Util.setIsSubscribed (this.transport.preRoll (), enable);
         Util.setIsSubscribed (this.transport.getPosition (), enable);
+        Util.setIsSubscribed (this.transport.arrangerLoopStart (), enable);
+        Util.setIsSubscribed (this.transport.arrangerLoopDuration (), enable);
         Util.setIsSubscribed (this.transport.clipLauncherPostRecordingAction (), enable);
         Util.setIsSubscribed (this.transport.getClipLauncherPostRecordingTimeOffset (), enable);
         Util.setIsSubscribed (this.transport.defaultLaunchQuantization (), enable);
+        Util.setIsSubscribed (this.transport.isFillModeActive (), enable);
 
         this.crossfadeParameter.enableObservers (enable);
         this.metronomeVolumeParameter.enableObservers (enable);
@@ -171,7 +181,7 @@ public class TransportImpl implements ITransport
 
     /** {@inheritDoc} */
     @Override
-    public void record ()
+    public void startRecording ()
     {
         this.transport.record ();
     }
@@ -391,17 +401,14 @@ public class TransportImpl implements ITransport
     {
         switch (mode)
         {
-            case TRIM_READ:
-            case READ:
+            case TRIM_READ, READ:
                 this.transport.isArrangerAutomationWriteEnabled ().set (false);
                 break;
 
-            case WRITE:
-            case TOUCH:
-            case LATCH:
-            case LATCH_PREVIEW:
+            case WRITE, TOUCH, LATCH, LATCH_PREVIEW:
                 this.transport.isArrangerAutomationWriteEnabled ().set (true);
-                this.transport.automationWriteMode ().set (mode.getIdentifier ());
+                final String identifier = mode == AutomationMode.LATCH_PREVIEW ? AutomationMode.LATCH.getIdentifier () : mode.getIdentifier ();
+                this.transport.automationWriteMode ().set (identifier);
                 break;
 
             default:
@@ -455,10 +462,7 @@ public class TransportImpl implements ITransport
     @Override
     public String getBeatText ()
     {
-        return this.transport.getPosition ().getFormatted ( (beatTime, isAbsolute, timeSignatureNumerator, timeSignatureDenominator, timeSignatureTicks) -> {
-            final int quartersPerMeasure = 4 * timeSignatureNumerator / timeSignatureDenominator;
-            return StringUtils.formatMeasuresLong (quartersPerMeasure, beatTime, 1, true);
-        });
+        return this.transport.getPosition ().getFormatted (BEAT_POSITION_FORMATTER);
     }
 
 
@@ -488,6 +492,40 @@ public class TransportImpl implements ITransport
     {
         final double frac = slow ? TransportConstants.INC_FRACTION_TIME_SLOW : TransportConstants.INC_FRACTION_TIME;
         this.transport.getPosition ().inc (increase ? frac : -frac);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getLoopStartBeatText ()
+    {
+        return this.transport.arrangerLoopStart ().getFormatted (BEAT_POSITION_FORMATTER);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void changeLoopStart (final boolean increase, final boolean slow)
+    {
+        final double frac = slow ? TransportConstants.INC_FRACTION_TIME_SLOW : TransportConstants.INC_FRACTION_TIME;
+        this.transport.arrangerLoopStart ().inc (increase ? frac : -frac);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getLoopLengthBeatText ()
+    {
+        return this.transport.arrangerLoopDuration ().getFormatted (BEAT_LENGTH_FORMATTER);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void changeLoopLength (final boolean increase, final boolean slow)
+    {
+        final double frac = slow ? TransportConstants.INC_FRACTION_TIME_SLOW : TransportConstants.INC_FRACTION_TIME;
+        this.transport.arrangerLoopDuration ().inc (increase ? frac : -frac);
     }
 
 
@@ -775,5 +813,49 @@ public class TransportImpl implements ITransport
     public void setDefaultLaunchQuantization (final LaunchQuantization launchQuantization)
     {
         this.transport.defaultLaunchQuantization ().set (launchQuantization.getValue ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isFillModeActive ()
+    {
+        return this.transport.isFillModeActive ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setFillModeActive (final boolean isActive)
+    {
+        this.transport.isFillModeActive ().set (isActive);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void toggleFillModeActive ()
+    {
+        this.transport.isFillModeActive ().toggle ();
+    }
+
+
+    /**
+     * Get the Bitwig transport object.
+     *
+     * @return The transport object
+     */
+    public Transport getTransport ()
+    {
+        return this.transport;
+    }
+
+
+    private static BeatTimeFormatter formatAsBeats (final int offset)
+    {
+        return (beatTime, isAbsolute, timeSignatureNumerator, timeSignatureDenominator, timeSignatureTicks) -> {
+            final int quartersPerMeasure = 4 * timeSignatureNumerator / timeSignatureDenominator;
+            return StringUtils.formatMeasuresLong (quartersPerMeasure, beatTime, offset, true);
+        };
     }
 }

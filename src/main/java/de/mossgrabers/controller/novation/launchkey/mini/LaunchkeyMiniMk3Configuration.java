@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.novation.launchkey.mini;
@@ -40,6 +40,7 @@ public class LaunchkeyMiniMk3Configuration extends AbstractConfiguration
         ///////////////////////////
         // Transport
 
+        this.activateBehaviourOnStopSetting (globalSettings);
         this.activateRecordButtonSetting (globalSettings);
         this.activateShiftedRecordButtonSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);

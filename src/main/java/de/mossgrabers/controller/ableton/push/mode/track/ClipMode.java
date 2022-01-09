@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ableton.push.mode.track;
@@ -139,8 +139,8 @@ public class ClipMode extends AbstractTrackMode
         {
             final IView activeView = this.surface.getViewManager ().getActive ();
             INoteClip clip;
-            if (activeView instanceof AbstractSequencerView)
-                clip = ((AbstractSequencerView<?, ?>) activeView).getClip ();
+            if (activeView instanceof final AbstractSequencerView<?, ?> sequencerView)
+                clip = sequencerView.getClip ();
             else
                 clip = this.model.getNoteClip (8, 128);
             if (!clip.doesExist ())
@@ -173,16 +173,16 @@ public class ClipMode extends AbstractTrackMode
         final ITrack t7 = tb.getItem (7);
 
         final boolean canPin = this.model.getHost ().supports (Capability.HAS_PINNING);
-        final boolean isPinned = canPin && clip instanceof INoteClip && ((INoteClip) clip).isPinned ();
+        final boolean isPinned = canPin && clip instanceof final INoteClip noteClip && noteClip.isPinned ();
 
-        display.addParameterElement (canPin ? "Pin clip" : "", isPinned, t0.getName (), t0.getType (), t0.getColor (), t0.isSelected (), "Play Start", -1, this.formatMeasures (clip.getPlayStart (), 1), this.isKnobTouched[0], -1);
-        display.addParameterElement ("", false, t1.getName (), t1.getType (), t1.getColor (), t1.isSelected (), "Play End", -1, this.formatMeasures (clip.getPlayEnd (), 1), this.isKnobTouched[1], -1);
-        display.addParameterElement ("", false, t2.getName (), t2.getType (), t2.getColor (), t2.isSelected (), "Loop Start", -1, this.formatMeasures (clip.getLoopStart (), 1), this.isKnobTouched[2], -1);
-        display.addParameterElement ("", false, t3.getName (), t3.getType (), t3.getColor (), t3.isSelected (), "Loop Lngth", -1, this.formatMeasures (clip.getLoopLength (), 0), this.isKnobTouched[3], -1);
-        display.addParameterElement ("", false, t4.getName (), t4.getType (), t4.getColor (), t4.isSelected (), "Loop", -1, clip.isLoopEnabled () ? "On" : "Off", this.isKnobTouched[4], -1);
-        display.addParameterElement ("", false, t5.getName (), t5.getType (), t5.getColor (), t5.isSelected (), "", -1, "", false, -1);
-        display.addParameterElement ("", false, t6.getName (), t6.getType (), t6.getColor (), t6.isSelected (), "Shuffle", -1, clip.isShuffleEnabled () ? "On" : "Off", this.isKnobTouched[6], -1);
-        display.addParameterElement ("Select color", false, t7.getName (), t7.getType (), t7.getColor (), t7.isSelected (), "Accent", -1, clip.getFormattedAccent (), this.isKnobTouched[7], -1);
+        display.addParameterElement (canPin ? "Pin clip" : "", isPinned, t0.getName (), this.updateType (t0), t0.getColor (), t0.isSelected (), "Play Start", -1, this.formatMeasures (clip.getPlayStart (), 1), this.isKnobTouched[0], -1);
+        display.addParameterElement ("", false, t1.getName (), this.updateType (t1), t1.getColor (), t1.isSelected (), "Play End", -1, this.formatMeasures (clip.getPlayEnd (), 1), this.isKnobTouched[1], -1);
+        display.addParameterElement ("", false, t2.getName (), this.updateType (t2), t2.getColor (), t2.isSelected (), "Loop Start", -1, this.formatMeasures (clip.getLoopStart (), 1), this.isKnobTouched[2], -1);
+        display.addParameterElement ("", false, t3.getName (), this.updateType (t3), t3.getColor (), t3.isSelected (), "Loop Lngth", -1, this.formatMeasures (clip.getLoopLength (), 0), this.isKnobTouched[3], -1);
+        display.addParameterElement ("", false, t4.getName (), this.updateType (t4), t4.getColor (), t4.isSelected (), "Loop", -1, clip.isLoopEnabled () ? "On" : "Off", this.isKnobTouched[4], -1);
+        display.addParameterElement ("", false, t5.getName (), this.updateType (t5), t5.getColor (), t5.isSelected (), "", -1, "", false, -1);
+        display.addParameterElement ("", false, t6.getName (), this.updateType (t6), t6.getColor (), t6.isSelected (), "Shuffle", -1, clip.isShuffleEnabled () ? "On" : "Off", this.isKnobTouched[6], -1);
+        display.addParameterElement ("Select color", false, t7.getName (), this.updateType (t7), t7.getColor (), t7.isSelected (), "Accent", -1, clip.getFormattedAccent (), this.isKnobTouched[7], -1);
     }
 
 
@@ -202,8 +202,8 @@ public class ClipMode extends AbstractTrackMode
         if (index == 0)
         {
             final IClip clip = this.model.getCursorClip ();
-            if (clip instanceof INoteClip)
-                ((INoteClip) clip).togglePinned ();
+            if (clip instanceof final INoteClip noteClip)
+                noteClip.togglePinned ();
             return;
         }
 
@@ -228,7 +228,7 @@ public class ClipMode extends AbstractTrackMode
                 if (!this.model.getHost ().supports (Capability.HAS_PINNING))
                     return PushColorManager.PUSH2_COLOR2_BLACK;
                 final IClip clip = this.model.getCursorClip ();
-                final boolean isPinned = clip instanceof INoteClip && ((INoteClip) clip).isPinned ();
+                final boolean isPinned = clip instanceof final INoteClip noteClip && noteClip.isPinned ();
                 return isPinned ? PushColorManager.PUSH2_COLOR2_GREEN : PushColorManager.PUSH2_COLOR2_WHITE;
             }
             if (index == 7)

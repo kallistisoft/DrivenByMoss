@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.bitwig.framework.hardware;
@@ -60,9 +60,7 @@ public class RawColorLightState extends InternalHardwareLightState
     {
         if (this == obj)
             return true;
-        if (obj == null)
-            return false;
-        if (this.getClass () != obj.getClass ())
+        if (obj == null || this.getClass () != obj.getClass ())
             return false;
         final RawColorLightState other = (RawColorLightState) obj;
         return this.colorState.encode () == other.colorState.encode ();

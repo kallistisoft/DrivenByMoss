@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.bitwig.framework.usb;
@@ -23,8 +23,8 @@ import com.bitwig.extension.controller.api.UsbTransferDirection;
  */
 public class UsbEndpointImpl implements IUsbEndpoint
 {
-    private IHost   host;
-    private UsbPipe endpoint;
+    private final IHost   host;
+    private final UsbPipe endpoint;
 
 
     /**
@@ -49,7 +49,7 @@ public class UsbEndpointImpl implements IUsbEndpoint
 
         try
         {
-            ((UsbOutputPipe) this.endpoint).write (((MemoryBlockImpl) memoryBlock).getMemoryBlock (), timeout);
+            ((UsbOutputPipe) this.endpoint).write (((MemoryBlockImpl) memoryBlock).memoryBlock (), timeout);
         }
         catch (final RuntimeException ex)
         {
@@ -69,7 +69,7 @@ public class UsbEndpointImpl implements IUsbEndpoint
 
         try
         {
-            ((UsbInputPipe) this.endpoint).readAsync (((MemoryBlockImpl) memoryBlock).getMemoryBlock (), callback::process, timeout);
+            ((UsbInputPipe) this.endpoint).readAsync (((MemoryBlockImpl) memoryBlock).memoryBlock (), callback::process, timeout);
         }
         catch (final RuntimeException ex)
         {

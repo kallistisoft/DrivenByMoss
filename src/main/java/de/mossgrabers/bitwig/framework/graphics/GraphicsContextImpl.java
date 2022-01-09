@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.bitwig.framework.graphics;
@@ -23,7 +23,7 @@ import com.bitwig.extension.api.graphics.Image;
  */
 public class GraphicsContextImpl implements IGraphicsContext
 {
-    private GraphicsOutput gc;
+    private final GraphicsOutput gc;
 
 
     /**
@@ -239,7 +239,7 @@ public class GraphicsContextImpl implements IGraphicsContext
     @Override
     public void drawImage (final IImage icon, final double x, final double y)
     {
-        this.gc.drawImage (((ImageImpl) icon).getImage (), x, y);
+        this.gc.drawImage (((ImageImpl) icon).image (), x, y);
     }
 
 
@@ -251,7 +251,7 @@ public class GraphicsContextImpl implements IGraphicsContext
         try
         {
             this.setColor (maskColor);
-            final Image image = imageImpl.getImage ();
+            final Image image = imageImpl.image ();
             this.gc.mask (image, x, y);
             this.gc.fill ();
         }

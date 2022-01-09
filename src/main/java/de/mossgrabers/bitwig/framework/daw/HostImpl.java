@@ -1,10 +1,8 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.bitwig.framework.daw;
-
-import static java.util.stream.Collectors.toList;
 
 import de.mossgrabers.bitwig.framework.daw.DeviceMetadataImpl.PluginType;
 import de.mossgrabers.bitwig.framework.graphics.BitmapImpl;
@@ -57,9 +55,10 @@ public class HostImpl implements IHost
     private static final List<IDeviceMetadata> instrumentsMetadata  = new ArrayList<> ();
     private static final List<IDeviceMetadata> audioEffectsMetadata = new ArrayList<> ();
 
-    private ControllerHost                     host;
-    private List<IUsbDevice>                   usbDevices           = new ArrayList<> ();
-    
+    private final ControllerHost               host;
+    private final List<IUsbDevice>             usbDevices           = new ArrayList<> ();
+
+
     /**
      * Constructor.
      *
@@ -90,40 +89,44 @@ public class HostImpl implements IHost
     {
         switch (capability)
         {
-            case MARKERS:
-                return false;
-
             case NOTE_REPEAT_LENGTH:
             case NOTE_REPEAT_SWING:
             case NOTE_REPEAT_MODE:
             case NOTE_REPEAT_OCTAVES:
             case NOTE_REPEAT_IS_FREE_RUNNING:
             case NOTE_REPEAT_USE_PRESSURE_TO_VELOCITY:
-                return true;
 
+            case NOTE_EDIT_MUTE:
+            case NOTE_EDIT_VELOCITY_SPREAD:
             case NOTE_EDIT_RELEASE_VELOCITY:
-            case NOTE_EDIT_PRESSURE:
-            case NOTE_EDIT_TIMBRE:
-            case NOTE_EDIT_PANORAMA:
-            case NOTE_EDIT_TRANSPOSE:
-            case NOTE_EDIT_GAIN:
-                return true;
+            case NOTE_EDIT_EXPRESSIONS:
+            case NOTE_EDIT_REPEAT:
+            case NOTE_EDIT_CHANCE:
+            case NOTE_EDIT_OCCURRENCE:
+            case NOTE_EDIT_RECCURRENCE:
 
             case QUANTIZE_INPUT_NOTE_LENGTH:
             case QUANTIZE_AMOUNT:
-                return true;
 
             case CUE_VOLUME:
-                return true;
 
             case HAS_SLOT_CHAINS:
             case HAS_DRUM_DEVICE:
             case HAS_CROSSFADER:
             case HAS_PINNING:
             case HAS_EFFECT_BANK:
+            case HAS_BROWSER_PREVIEW:
                 return true;
         }
         return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void restart ()
+    {
+        this.host.restart ();
     }
 
 
@@ -204,7 +207,7 @@ public class HostImpl implements IHost
 
     /** {@inheritDoc} */
     @Override
-    public IOpenSoundControlMessage createOSCMessage (final String address, final List<Object> values)
+    public IOpenSoundControlMessage createOSCMessage (final String address, final List<?> values)
     {
         return new OpenSoundControlMessageImpl (address, values);
     }
@@ -355,7 +358,7 @@ public class HostImpl implements IHost
     {
         try (final BufferedReader reader = new BufferedReader (new InputStreamReader (HostImpl.class.getClassLoader ().getResourceAsStream ("devices/" + fileName))))
         {
-            return reader.lines ().collect (toList ());
+            return reader.lines ().toList ();
         }
         catch (final IOException ex)
         {

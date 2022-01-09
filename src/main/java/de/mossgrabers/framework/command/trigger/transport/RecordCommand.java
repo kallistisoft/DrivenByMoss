@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.command.trigger.transport;
@@ -57,6 +57,6 @@ public class RecordCommand<S extends IControlSurface<C>, C extends Configuration
         if (isShiftPressed && !flipRecord || !isShiftPressed && flipRecord)
             this.model.getTransport ().toggleLauncherOverdub ();
         else
-            this.model.getTransport ().record ();
+            this.model.getTransport ().startRecording ();
     }
 }

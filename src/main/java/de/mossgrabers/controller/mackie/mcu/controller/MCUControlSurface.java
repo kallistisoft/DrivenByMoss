@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.mackie.mcu.controller;
@@ -187,7 +187,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
     public static final int               KNOB_LED_MODE_SPREAD     = 3;
 
     private int                           activeVuMode             = VUMODE_LED;
-    private int []                        knobValues               = new int [8];
+    private final int []                  knobValues               = new int [8];
 
     private final List<MCUControlSurface> surfaces;
     private final int                     extenderOffset;

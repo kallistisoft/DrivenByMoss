@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ni.maschine.mk3.view;
@@ -77,16 +77,17 @@ public class ClipView extends BaseView
             return;
         }
 
-        if (configuration.isSelectClipOnLaunch ())
-            slot.select ();
-
-        if (!track.get ().isRecArm ())
+        // Select clip
+        if (this.isButtonCombination (ButtonID.SELECT))
         {
-            slot.launch ();
+            slot.select ();
             return;
         }
 
-        if (slot.hasContent ())
+        if (configuration.isSelectClipOnLaunch ())
+            slot.select ();
+
+        if (!track.get ().isRecArm () || slot.hasContent ())
         {
             slot.launch ();
             return;

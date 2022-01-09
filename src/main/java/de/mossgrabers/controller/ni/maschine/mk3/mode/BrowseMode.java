@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ni.maschine.mk3.mode;
@@ -194,6 +194,12 @@ public class BrowseMode extends BaseMode
     @Override
     public void selectPreviousItem ()
     {
+        if (this.surface.isShiftPressed ())
+        {
+            this.selectPreviousItemPage ();
+            return;
+        }
+
         final int selectedParameter = this.getSelectedParameter ();
         if (selectedParameter > 0)
             this.selectParameter (selectedParameter - 1);
@@ -204,6 +210,12 @@ public class BrowseMode extends BaseMode
     @Override
     public void selectNextItem ()
     {
+        if (this.surface.isShiftPressed ())
+        {
+            this.selectNextItemPage ();
+            return;
+        }
+
         final int selectedParameter = this.getSelectedParameter ();
         if (selectedParameter < 7)
             this.selectParameter (selectedParameter + 1);

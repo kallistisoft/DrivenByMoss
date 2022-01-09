@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.scale;
@@ -106,8 +106,8 @@ public class Scales
     private int                         pianoOctave              = 0;
     private int                         startNote;
     private int                         endNote;
-    private int                         numColumns;
-    private int                         numRows;
+    private final int                   numColumns;
+    private final int                   numRows;
 
     private int []                      drumMatrix               = DRUM_MATRIX;
     private int                         drumNoteStart            = DRUM_NOTE_START;
@@ -115,7 +115,7 @@ public class Scales
 
     private final Map<Scale, ScaleGrid> scaleGrids               = new EnumMap<> (Scale.class);
     private final Map<Scale, ChordGrid> chordGrids               = new EnumMap<> (Scale.class);
-    private IValueChanger               valueChanger;
+    private final IValueChanger         valueChanger;
 
 
     /**

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.akai.fire.controller;
@@ -87,6 +87,10 @@ public class FireColorManager extends ColorManager
 
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT, FIRE_COLOR_DARK_GREEN);
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_CONTENT, FIRE_COLOR_GREEN);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED, FIRE_COLOR_GRAY);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED_CONT, FIRE_COLOR_GRAY);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_SELECTED, FIRE_COLOR_DARKER_YELLOW);
+
         this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT, FIRE_COLOR_BLACK);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, FIRE_COLOR_BLUE);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT_CONT, FIRE_COLOR_DARK_BLUE);

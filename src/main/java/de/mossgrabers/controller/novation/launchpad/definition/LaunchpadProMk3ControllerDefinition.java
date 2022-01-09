@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.novation.launchpad.definition;
@@ -84,6 +84,7 @@ public class LaunchpadProMk3ControllerDefinition extends AbstractLaunchpadDefini
 
             case LINUX:
                 midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Launchpad Pro MK3 MIDI 1", "Launchpad Pro MK3 MIDI 1"));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Launchpad Pro MK3 LPProMK3 DAW", "Launchpad Pro MK3 LPProMK3 DAW"));
                 break;
 
             case MAC:

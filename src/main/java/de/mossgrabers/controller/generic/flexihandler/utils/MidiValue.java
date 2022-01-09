@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.generic.flexihandler.utils;
@@ -20,6 +20,7 @@ public class MidiValue
 
     private final boolean                        isHighRes;
     private final int                            value;
+    private final int                            upscaled;
 
 
     /**
@@ -30,8 +31,9 @@ public class MidiValue
      */
     private MidiValue (final int value, final boolean isHighRes)
     {
-        this.value = value;
         this.isHighRes = isHighRes;
+        this.value = value;
+        this.upscaled = this.isHighRes ? value : (int) Math.round (value * 16383.0 / 127.0);
     }
 
 
@@ -80,5 +82,17 @@ public class MidiValue
     public int getValue ()
     {
         return this.value;
+    }
+
+
+    /**
+     * Get the value. If this is a high-res value it is unmodified. If it is low-res it is
+     * up-scaled.
+     *
+     * @return The up-scaled value
+     */
+    public int getUpscaled ()
+    {
+        return this.upscaled;
     }
 }

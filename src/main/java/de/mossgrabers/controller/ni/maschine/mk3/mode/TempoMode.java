@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ni.maschine.mk3.mode;
@@ -52,9 +52,9 @@ public class TempoMode extends BaseMode
 
         final ITransport transport = this.model.getTransport ();
         final double tempo = transport.getTempo ();
-        d.setCell (0, 0, "Tempo:").setCell (0, 2, String.format ("%.02f", Double.valueOf (tempo)));
-        d.setBlock (0, 2, "Time:").setBlock (0, 3, transport.getPositionText ());
-        d.setBlock (1, 2, "Position:").setBlock (1, 3, transport.getBeatText ());
+        d.setCell (0, 0, "Tempo:").setBlock (0, 1, String.format ("> %.02f", Double.valueOf (tempo)));
+        d.setBlock (0, 2, "Time:").setBlock (0, 3, "  " + transport.getPositionText ());
+        d.setBlock (1, 2, "Position:").setBlock (1, 3, "  " + transport.getBeatText ());
 
         d.allDone ();
     }

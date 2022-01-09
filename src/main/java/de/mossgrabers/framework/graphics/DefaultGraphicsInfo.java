@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.graphics;
@@ -86,7 +86,7 @@ public class DefaultGraphicsInfo implements IGraphicsInfo
     @Override
     public IGraphicsInfo withBounds (final double top, final double height)
     {
-        return this.withBounds (this.bounds.getLeft (), top, this.bounds.getWidth (), height);
+        return this.withBounds (this.bounds.left (), top, this.bounds.width (), height);
     }
 
 

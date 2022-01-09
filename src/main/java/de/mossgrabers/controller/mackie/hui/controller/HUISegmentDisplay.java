@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.mackie.hui.controller;
@@ -22,8 +22,8 @@ public class HUISegmentDisplay extends AbstractTextDisplay
 {
     private static final String SYSEX_HDR          = "F0 00 00 66 05 00 11 ";
 
-    private int []              transportBuffer    = new int [8];
-    private int []              oldtransportBuffer = new int [8];
+    private final int []        transportBuffer    = new int [8];
+    private final int []        oldtransportBuffer = new int [8];
 
 
     /**

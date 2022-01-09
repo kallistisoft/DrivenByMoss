@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.parameterprovider.special;
@@ -17,31 +17,11 @@ import java.util.Set;
  * Get a number of empty parameters.
  *
  * @author J&uuml;rgen Mo&szlig;graber
+ *
+ * @param size The number of parameters
  */
-public class EmptyParameterProvider implements IParameterProvider
+public record EmptyParameterProvider (int size) implements IParameterProvider
 {
-    private final int size;
-
-
-    /**
-     * Constructor.
-     *
-     * @param size The number of parameters
-     */
-    public EmptyParameterProvider (final int size)
-    {
-        this.size = size;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int size ()
-    {
-        return this.size;
-    }
-
-
     /**
      * Throws a FrameworkException if the bank does not contain parameters.
      *

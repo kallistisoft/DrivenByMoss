@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.graphics.canvas.component;
@@ -61,9 +61,9 @@ public class SceneListGridElement implements IComponent
         final IGraphicsContext gc = info.getContext ();
         final IGraphicsDimensions dimensions = info.getDimensions ();
         final IGraphicsConfiguration configuration = info.getConfiguration ();
-        final double left = info.getBounds ().getLeft ();
-        final double width = info.getBounds ().getWidth ();
-        final double height = info.getBounds ().getHeight ();
+        final double left = info.getBounds ().left ();
+        final double width = info.getBounds ().width ();
+        final double height = info.getBounds ().height ();
 
         final double separatorSize = dimensions.getSeparatorSize ();
         final double inset = dimensions.getInset ();
@@ -109,16 +109,10 @@ public class SceneListGridElement implements IComponent
     {
         if (this == obj)
             return true;
-        if (obj == null)
-            return false;
-        if (this.getClass () != obj.getClass ())
+        if (obj == null || this.getClass () != obj.getClass ())
             return false;
         final SceneListGridElement other = (SceneListGridElement) obj;
-        if (!Arrays.equals (this.colors, other.colors))
-            return false;
-        if (!Arrays.equals (this.exists, other.exists))
-            return false;
-        if (!Arrays.equals (this.isSelecteds, other.isSelecteds))
+        if (!Arrays.equals (this.colors, other.colors) || !Arrays.equals (this.exists, other.exists) || !Arrays.equals (this.isSelecteds, other.isSelecteds))
             return false;
         return Arrays.equals (this.names, other.names);
     }

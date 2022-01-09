@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ableton.push.view;
@@ -21,11 +21,11 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class PrgChangeView extends AbstractView<PushControlSurface, PushConfiguration>
 {
-    private int []  greens;
-    private int []  yellows;
-    private int     bankNumber    = 0;
-    private int     programNumber = -1;
-    private boolean isToggled     = false;
+    private final int [] greens;
+    private final int [] yellows;
+    private int          bankNumber    = 0;
+    private int          programNumber = -1;
+    private boolean      isToggled     = false;
 
 
     /**

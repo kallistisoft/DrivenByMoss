@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.akai.apc.controller;
@@ -115,7 +115,7 @@ public class APCControlSurface extends AbstractControlSurface<APCConfiguration>
     public static final int     LED_MODE_VOLUME                = 2;
     public static final int     LED_MODE_PAN                   = 3;
 
-    private boolean             isMkII;
+    private final boolean       isMkII;
     private final int []        knobCache                      = new int [128];
 
 

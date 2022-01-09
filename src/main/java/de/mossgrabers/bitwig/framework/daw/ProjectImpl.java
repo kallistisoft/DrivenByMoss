@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.bitwig.framework.daw;
@@ -90,6 +90,14 @@ public class ProjectImpl implements IProject
 
     /** {@inheritDoc} */
     @Override
+    public void createScene ()
+    {
+        this.project.createScene ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void createSceneFromPlayingLauncherClips ()
     {
         this.project.createSceneFromPlayingLauncherClips ();
@@ -101,6 +109,16 @@ public class ProjectImpl implements IProject
     public void save ()
     {
         final Action action = this.application.getAction ("Save");
+        if (action != null)
+            action.invoke ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void load ()
+    {
+        final Action action = this.application.getAction ("Open");
         if (action != null)
             action.invoke ();
     }

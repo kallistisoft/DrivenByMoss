@@ -1,9 +1,10 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.bitwig.framework.daw.data.bank;
 
+import de.mossgrabers.bitwig.framework.daw.TransportImpl;
 import de.mossgrabers.bitwig.framework.daw.data.MarkerImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
@@ -52,6 +53,6 @@ public class MarkerBankImpl extends AbstractItemBankImpl<CueMarkerBank, IMarker>
     @Override
     public void addMarker ()
     {
-        // TODO API extension required - https://github.com/teotigraphix/Framework4Bitwig/issues/215
+        ((TransportImpl) this.transport).getTransport ().addCueMarkerAtPlaybackPosition ();
     }
 }

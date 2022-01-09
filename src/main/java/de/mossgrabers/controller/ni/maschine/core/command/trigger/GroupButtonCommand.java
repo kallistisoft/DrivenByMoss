@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ni.maschine.core.command.trigger;
@@ -115,16 +115,17 @@ public class GroupButtonCommand<S extends IControlSurface<C>, C extends Configur
             return;
         }
 
+        // Set sequencer resolution
         if (this.surface.isPressed (ButtonID.GROOVE))
         {
             final IView active = this.surface.getViewManager ().getActive ();
-            if (active instanceof AbstractSequencerView)
-                ((AbstractSequencerView<?, ?>) active).setResolutionIndex (this.index);
+            if (active instanceof final AbstractSequencerView<?, ?> sequencerView)
+                sequencerView.setResolutionIndex (this.index);
             return;
         }
 
-        // Track selection
-        track.select ();
+        // Track selection or group expansion
+        track.selectOrExpandGroup ();
     }
 
 
@@ -176,8 +177,8 @@ public class GroupButtonCommand<S extends IControlSurface<C>, C extends Configur
         if (this.surface.isPressed (ButtonID.GROOVE))
         {
             final IView active = this.surface.getViewManager ().getActive ();
-            if (active instanceof AbstractSequencerView)
-                return ((AbstractSequencerView<?, ?>) active).getResolutionIndex () == this.index ? MaschineColorManager.COLOR_GREEN : MaschineColorManager.COLOR_DARK_GREY;
+            if (active instanceof final AbstractSequencerView<?, ?> sequencerView)
+                return sequencerView.getResolutionIndex () == this.index ? MaschineColorManager.COLOR_GREEN : MaschineColorManager.COLOR_DARK_GREY;
             return MaschineColorManager.COLOR_BLACK;
         }
 

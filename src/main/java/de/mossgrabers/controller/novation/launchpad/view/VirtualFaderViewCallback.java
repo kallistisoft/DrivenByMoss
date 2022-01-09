@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.novation.launchpad.view;
@@ -38,8 +38,8 @@ public class VirtualFaderViewCallback implements IVirtualFaderCallback
     public int getValue ()
     {
         final IView activeView = this.viewManager.getActive ();
-        if (activeView instanceof AbstractFaderView)
-            return ((AbstractFaderView) activeView).getFaderValue (this.index);
+        if (activeView instanceof final AbstractFaderView faderView)
+            return faderView.getFaderValue (this.index);
         return 0;
     }
 
@@ -49,7 +49,7 @@ public class VirtualFaderViewCallback implements IVirtualFaderCallback
     public void setValue (final int value)
     {
         final IView activeView = this.viewManager.getActive ();
-        if (activeView instanceof AbstractFaderView)
-            ((AbstractFaderView) activeView).onValueKnob (this.index, value);
+        if (activeView instanceof final AbstractFaderView faderView)
+            faderView.onValueKnob (this.index, value);
     }
 }

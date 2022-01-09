@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ableton.push;
@@ -348,7 +348,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateEnableVUMetersSetting (globalSettings);
-        this.activateFootswitchSetting (globalSettings, 2);
+        this.activateFootswitchSetting (globalSettings, 0, "Footswitch 2");
         this.activateStopAutomationOnKnobReleaseSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
         this.activateKnobSpeedSetting (globalSettings);

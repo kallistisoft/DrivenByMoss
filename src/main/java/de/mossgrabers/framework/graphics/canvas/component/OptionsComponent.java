@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.graphics.canvas.component;
@@ -27,7 +27,7 @@ public class OptionsComponent implements IComponent
 
     private final String         headerBottom;
     private final String         headerTop;
-    private boolean              isBottomHeaderSelected;
+    private final boolean        isBottomHeaderSelected;
 
 
     /**
@@ -70,8 +70,8 @@ public class OptionsComponent implements IComponent
         this.header.draw (info.withBounds (0, menuHeight));
 
         final IBounds bounds = info.getBounds ();
-        final double left = bounds.getLeft ();
-        final double height = bounds.getHeight ();
+        final double left = bounds.left ();
+        final double height = bounds.height ();
 
         this.footer.draw (info.withBounds (height - menuHeight, menuHeight));
 
@@ -115,9 +115,7 @@ public class OptionsComponent implements IComponent
     {
         if (this == obj)
             return true;
-        if (obj == null)
-            return false;
-        if (this.getClass () != obj.getClass ())
+        if (obj == null || this.getClass () != obj.getClass ())
             return false;
         final OptionsComponent other = (OptionsComponent) obj;
         if (this.footer == null)

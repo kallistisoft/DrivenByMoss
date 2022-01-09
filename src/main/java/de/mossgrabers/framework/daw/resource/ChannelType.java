@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw.resource;
@@ -13,17 +13,19 @@ public enum ChannelType
 {
     /** A Track of unknown type. */
     UNKNOWN,
-    /** Audio Track. */
+    /** Audio track. */
     AUDIO,
-    /** Instrument Track. */
+    /** Instrument track. */
     INSTRUMENT,
-    /** Hybrid Track (Audio + MIDI). */
+    /** Hybrid track (Audio + MIDI). */
     HYBRID,
-    /** A group Track. */
+    /** A group track. */
     GROUP,
-    /** An effect Track. */
+    /** An open group track. */
+    GROUP_OPEN,
+    /** An effect track. */
     EFFECT,
-    /** The master Track. */
+    /** The master track. */
     MASTER,
     /** A device layer. */
     LAYER

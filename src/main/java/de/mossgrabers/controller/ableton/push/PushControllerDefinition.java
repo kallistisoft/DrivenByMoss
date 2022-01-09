@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ableton.push;
@@ -32,7 +32,7 @@ public class PushControllerDefinition extends DefaultControllerDefinition
     /** Push 2 USB display endpoint. */
     private static final byte  ENDPOINT_ADDRESS   = (byte) 0x01;
 
-    private boolean            isMkII;
+    private final boolean      isMkII;
 
 
     /**
@@ -62,9 +62,6 @@ public class PushControllerDefinition extends DefaultControllerDefinition
                 break;
 
             case LINUX:
-                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (this.isMkII ? "Ableton Push 2 MIDI 1" : "Ableton Push MIDI 2"));
-                break;
-
             case MAC:
                 midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (this.isMkII ? "Ableton Push 2 Live Port" : "Ableton Push User Port"));
                 break;

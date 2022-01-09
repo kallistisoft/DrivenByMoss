@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.featuregroup;
@@ -7,6 +7,7 @@ package de.mossgrabers.framework.featuregroup;
 import de.mossgrabers.framework.command.core.AftertouchCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.KeyManager;
 
 
 /**
@@ -86,4 +87,12 @@ public interface IView extends IFeatureGroup
      * @param index The index of the track in the page
      */
     void selectTrack (int index);
+
+
+    /**
+     * Get the key manager.
+     *
+     * @return The key manager
+     */
+    KeyManager getKeyManager ();
 }

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.akai.apc.command.trigger;
@@ -43,9 +43,9 @@ public class APCStopClipCommand extends StopClipCommand<APCControlSurface, APCCo
 
         // Set the step resolution in sequencer modes
         final IView view = this.surface.getViewManager ().getActive ();
-        if (view instanceof AbstractSequencerView)
+        if (view instanceof final AbstractSequencerView<?, ?> sequencerView)
         {
-            ((AbstractSequencerView<?, ?>) view).setResolutionIndex (this.index);
+            sequencerView.setResolutionIndex (this.index);
             return;
         }
 

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.command.trigger.transport;
@@ -27,7 +27,7 @@ import java.util.Optional;
  */
 public class ConfiguredRecordCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private ShiftMode shiftMode;
+    private final ShiftMode shiftMode;
 
 
     private enum ShiftMode
@@ -74,7 +74,7 @@ public class ConfiguredRecordCommand<S extends IControlSurface<C>, C extends Con
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        if (event != ButtonEvent.DOWN)
+        if (event != ButtonEvent.UP)
             return;
 
         final C configuration = this.surface.getConfiguration ();
@@ -82,7 +82,7 @@ public class ConfiguredRecordCommand<S extends IControlSurface<C>, C extends Con
         switch (recordMode)
         {
             case RECORD_ARRANGER:
-                this.model.getTransport ().record ();
+                this.model.getTransport ().startRecording ();
                 break;
             case RECORD_CLIP:
                 final Optional<ISlot> slot = this.model.getSelectedSlot ();
@@ -90,11 +90,11 @@ public class ConfiguredRecordCommand<S extends IControlSurface<C>, C extends Con
                     return;
                 final ISlot s = slot.get ();
                 if (!s.isRecording ())
-                    s.record ();
+                    s.startRecording ();
                 s.launch ();
                 break;
             case NEW_CLIP:
-                new NewCommand<> (this.model, this.surface).executeNormal (ButtonEvent.DOWN);
+                new NewCommand<> (this.model, this.surface).execute ();
                 break;
             case TOGGLE_ARRANGER_OVERDUB:
                 this.model.getTransport ().toggleOverdub ();

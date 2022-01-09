@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ni.maschine.core;
@@ -91,6 +91,10 @@ public class MaschineColorManager extends ColorManager
 
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT, COLOR_GREEN_LO);
         this.registerColorIndex (AbstractSequencerView.COLOR_STEP_HILITE_CONTENT, COLOR_GREEN);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED, COLOR_DARK_GREY);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_MUTED_CONT, COLOR_GREY);
+        this.registerColorIndex (AbstractSequencerView.COLOR_STEP_SELECTED, COLOR_YELLOW);
+
         this.registerColorIndex (AbstractSequencerView.COLOR_NO_CONTENT, COLOR_BLACK);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT, COLOR_BLUE);
         this.registerColorIndex (AbstractSequencerView.COLOR_CONTENT_CONT, COLOR_BLUE_LO);

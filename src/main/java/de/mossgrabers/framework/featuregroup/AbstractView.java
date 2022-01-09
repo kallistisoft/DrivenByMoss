@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.featuregroup;
@@ -166,6 +166,14 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public KeyManager getKeyManager ()
+    {
+        return this.keyManager;
+    }
+
+
     protected void delayedUpdateNoteMapping (final int [] matrix)
     {
         this.surface.scheduleTask ( () -> {
@@ -173,34 +181,6 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
             if (matrix.length == 128)
                 this.surface.setKeyTranslationTable (this.scales.translateMatrixToGrid (matrix));
         }, 6);
-    }
-
-
-    /**
-     * Get the key manager.
-     *
-     * @return The key manager
-     */
-    public KeyManager getKeyManager ()
-    {
-        return this.keyManager;
-    }
-
-
-    /**
-     * Tests if the button is pressed. If yes, the button UP event is consumed.
-     *
-     * @param buttonID The button to test
-     * @return True if button is pressed
-     */
-    protected boolean isButtonCombination (final ButtonID buttonID)
-    {
-        if (this.surface.isPressed (buttonID))
-        {
-            this.surface.setTriggerConsumed (buttonID);
-            return true;
-        }
-        return false;
     }
 
 

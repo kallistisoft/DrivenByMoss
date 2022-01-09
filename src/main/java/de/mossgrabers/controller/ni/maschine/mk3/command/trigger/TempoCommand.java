@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ni.maschine.mk3.command.trigger;
@@ -46,8 +46,8 @@ public class TempoCommand extends ModeSelectCommand<MaschineControlSurface, Masc
             if (event == ButtonEvent.DOWN)
             {
                 final EditNoteMode mode = (EditNoteMode) modeManager.get (Modes.NOTE);
-                final boolean isTranspose = mode.getSelectedItem () == EditNoteMode.TRANSPOSE;
-                mode.selectItem (isTranspose ? EditNoteMode.PRESSURE : EditNoteMode.TRANSPOSE);
+                final boolean isTranspose = mode.getSelectedItem () == EditNoteMode.PITCH;
+                mode.selectItem (isTranspose ? EditNoteMode.PRESSURE : EditNoteMode.PITCH);
                 this.surface.getDisplay ().notify (isTranspose ? "Pressure" : "Pitch");
             }
             return;

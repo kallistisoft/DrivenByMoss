@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ableton.push;
@@ -90,6 +90,7 @@ import de.mossgrabers.controller.ableton.push.view.SequencerView;
 import de.mossgrabers.controller.ableton.push.view.SessionView;
 import de.mossgrabers.framework.command.aftertouch.AftertouchViewCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
+import de.mossgrabers.framework.command.core.PitchbendCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.command.trigger.FootswitchCommand;
@@ -98,8 +99,8 @@ import de.mossgrabers.framework.command.trigger.application.DuplicateCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.clip.ConvertCommand;
 import de.mossgrabers.framework.command.trigger.clip.DoubleCommand;
+import de.mossgrabers.framework.command.trigger.clip.FillModeNoteRepeatCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
-import de.mossgrabers.framework.command.trigger.clip.NoteRepeatCommand;
 import de.mossgrabers.framework.command.trigger.clip.StopAllClipsCommand;
 import de.mossgrabers.framework.command.trigger.device.AddEffectCommand;
 import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
@@ -119,7 +120,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwFader;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.INoteClip;
 import de.mossgrabers.framework.daw.ITransport;
@@ -133,7 +134,6 @@ import de.mossgrabers.framework.daw.midi.DeviceInquiry;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
-import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ModeManager;
@@ -174,7 +174,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         this.isPush2 = isPush2;
         this.colorManager = new PushColorManager (isPush2);
-        this.valueChanger = new DefaultValueChanger (1024, 10);
+        this.valueChanger = new TwosComplementValueChanger (1024, 10);
         this.configuration = new PushConfiguration (host, this.valueChanger, factory.getArpeggiatorModes (), isPush2);
     }
 
@@ -186,9 +186,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         super.flush ();
 
         final PushControlSurface surface = this.getSurface ();
-        surface.getDisplay ().cancelNotification ();
 
-        final de.mossgrabers.framework.command.core.PitchbendCommand pitchbendCommand = surface.getContinuous (ContinuousID.TOUCHSTRIP).getPitchbendCommand ();
+        final PitchbendCommand pitchbendCommand = surface.getContinuous (ContinuousID.TOUCHSTRIP).getPitchbendCommand ();
         if (pitchbendCommand != null)
             pitchbendCommand.updateValue ();
     }
@@ -207,7 +206,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         }
         ms.setNumMarkers (8);
         ms.setHasFlatTrackList (false);
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
         this.sceneBank64 = this.model.createSceneBank (64);
 
         final ITrackBank trackBank = this.model.getTrackBank ();
@@ -234,7 +233,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiOutput output = midiAccess.createOutput ();
         final IMidiInput input = midiAccess.createInput ("Pads", "80????" /* Note off */,
-                "90????" /* Note on */, "B040??" /* Sustainpedal */);
+                "90????" /* Note on */, "B040??" /* Sustain pedal */);
         final PushControlSurface surface = new PushControlSurface (this.host, this.colorManager, this.configuration, output, input);
         this.surfaces.add (surface);
 
@@ -474,7 +473,21 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         this.addButton (ButtonID.QUANTIZE, "Quantize", new PushQuantizeCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_QUANTIZE);
         this.addButton (ButtonID.DELETE, "Delete", new DeleteCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_DELETE);
         this.addButton (ButtonID.DOUBLE, "Double Loop", new DoubleCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_DOUBLE);
-        this.addButton (ButtonID.UNDO, "Undo", new UndoCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_UNDO);
+        this.addButton (ButtonID.UNDO, "Undo", new UndoCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_UNDO, () -> {
+
+            if (surface.isShiftPressed ())
+            {
+                if (!this.model.getApplication ().canRedo ())
+                    return 0;
+            }
+            else
+            {
+                if (!this.model.getApplication ().canUndo ())
+                    return 0;
+            }
+            return surface.getButton (ButtonID.UNDO).isPressed () ? 2 : 1;
+
+        }, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON, ColorManager.BUTTON_STATE_HI);
 
         this.addButton (ButtonID.AUTOMATION, "Automate", new PushAutomationCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_AUTOMATION, () -> {
 
@@ -509,7 +522,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             if (viewManager.isActive (Views.SESSION))
                 return this.model.getCurrentTrackBank ().canScrollPageBackwards ();
             final IView activeView = viewManager.getActive ();
-            final INoteClip clip = activeView instanceof AbstractSequencerView && !(activeView instanceof ClipView) ? ((AbstractSequencerView<?, ?>) activeView).getClip () : null;
+            final INoteClip clip = activeView instanceof final AbstractSequencerView<?, ?> sequencerView && !(activeView instanceof ClipView) ? sequencerView.getClip () : null;
             return clip != null && clip.doesExist () && clip.canScrollStepsBackwards ();
 
         }, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
@@ -518,7 +531,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             if (viewManager.isActive (Views.SESSION))
                 return this.model.getCurrentTrackBank ().canScrollPageForwards ();
             final IView activeView = viewManager.getActive ();
-            final INoteClip clip = activeView instanceof AbstractSequencerView && !(activeView instanceof ClipView) ? ((AbstractSequencerView<?, ?>) activeView).getClip () : null;
+            final INoteClip clip = activeView instanceof final AbstractSequencerView<?, ?> sequencerView && !(activeView instanceof ClipView) ? sequencerView.getClip () : null;
             return clip != null && clip.doesExist () && clip.canScrollStepsForwards ();
 
         }, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
@@ -542,11 +555,11 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         this.addButton (ButtonID.OCTAVE_DOWN, "Octave Down", new OctaveCommand (false, this.model, surface), PushControlSurface.PUSH_BUTTON_OCTAVE_DOWN, () -> {
             final IView activeView = viewManager.getActive ();
-            return activeView instanceof TransposeView && ((TransposeView) activeView).isOctaveDownButtonOn ();
+            return activeView instanceof final TransposeView transposeView && transposeView.isOctaveDownButtonOn ();
         }, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         this.addButton (ButtonID.OCTAVE_UP, "Octave Up", new OctaveCommand (true, this.model, surface), PushControlSurface.PUSH_BUTTON_OCTAVE_UP, () -> {
             final IView activeView = viewManager.getActive ();
-            return activeView instanceof TransposeView && ((TransposeView) activeView).isOctaveUpButtonOn ();
+            return activeView instanceof final TransposeView transposeView && transposeView.isOctaveUpButtonOn ();
         }, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
 
         if (this.isPush2)
@@ -569,17 +582,12 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         this.addButton (ButtonID.STOP_CLIP, "Stop Clip", new StopAllClipsCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_STOP_CLIP, () -> surface.isPressed (ButtonID.STOP_CLIP), PushColorManager.PUSH_BUTTON_STATE_STOP_ON, PushColorManager.PUSH_BUTTON_STATE_STOP_HI);
         this.addButton (ButtonID.SESSION, "Session", new SelectSessionViewCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_SESSION, () -> Views.isSessionView (viewManager.getActiveID ()));
-        this.addButton (ButtonID.REPEAT, "Repeat", new NoteRepeatCommand<> (this.model, surface, true), PushControlSurface.PUSH_BUTTON_REPEAT, this.configuration::isNoteRepeatActive);
-        this.addButton (ButtonID.FOOTSWITCH2, "Foot Controller", new FootswitchCommand<> (this.model, surface), PushControlSurface.PUSH_FOOTSWITCH2);
+        this.addButton (ButtonID.REPEAT, "Repeat", new FillModeNoteRepeatCommand<> (this.model, surface, true), PushControlSurface.PUSH_BUTTON_REPEAT, this.configuration::isNoteRepeatActive);
+        this.addButton (ButtonID.FOOTSWITCH2, "Foot Controller", new FootswitchCommand<> (this.model, surface, 0), PushControlSurface.PUSH_FOOTSWITCH2);
     }
 
 
     /** {@inheritDoc} */
-    @SuppressWarnings(
-    {
-        "rawtypes",
-        "unchecked"
-    })
     @Override
     protected void registerContinuousCommands ()
     {
@@ -616,7 +624,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         };
         for (final Views viewID: views)
         {
-            final AbstractView view = AbstractView.class.cast (viewManager.get (viewID));
+            final IView view = viewManager.get (viewID);
             view.registerAftertouchCommand (new AftertouchViewCommand<> (view, this.model, surface));
         }
 

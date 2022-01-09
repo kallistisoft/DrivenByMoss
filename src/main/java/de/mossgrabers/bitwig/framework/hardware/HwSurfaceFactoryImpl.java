@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.bitwig.framework.hardware;
@@ -48,7 +48,7 @@ public class HwSurfaceFactoryImpl implements IHwSurfaceFactory
     private final HardwareSurface hardwareSurface;
 
     private int                   lightCounter = 0;
-    private long                  startup      = System.currentTimeMillis ();
+    private final long            startup      = System.currentTimeMillis ();
     private boolean               startupDone  = false;
 
 
@@ -168,7 +168,7 @@ public class HwSurfaceFactoryImpl implements IHwSurfaceFactory
     public IHwGraphicsDisplay createGraphicsDisplay (final int surfaceID, final OutputID outputID, final IBitmap bitmap)
     {
         final String id = createID (surfaceID, outputID.name ());
-        return new HwGraphicsDisplayImpl (this.hardwareSurface.createHardwarePixelDisplay (id, ((BitmapImpl) bitmap).getBitmap ()));
+        return new HwGraphicsDisplayImpl (this.hardwareSurface.createHardwarePixelDisplay (id, ((BitmapImpl) bitmap).bitmap ()));
     }
 
 

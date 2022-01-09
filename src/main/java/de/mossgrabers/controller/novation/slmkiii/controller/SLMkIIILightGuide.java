@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.novation.slmkiii.controller;
@@ -30,7 +30,7 @@ public class SLMkIIILightGuide extends LightGuideImpl
 
     /**
      * Constructor.
-     * 
+     *
      * @param model The model
      * @param colorManager The color manager for accessing specific colors to use
      * @param output The MIDI output which can address the pad states

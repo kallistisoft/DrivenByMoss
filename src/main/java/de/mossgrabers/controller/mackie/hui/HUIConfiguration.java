@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.mackie.hui;
@@ -81,7 +81,7 @@ public class HUIConfiguration extends AbstractConfiguration
     private boolean                touchChannel;
     private boolean                sendPing;
 
-    private int []                 assignableFunctions     = new int [10];
+    private final int []           assignableFunctions     = new int [10];
 
 
     /**
@@ -125,6 +125,7 @@ public class HUIConfiguration extends AbstractConfiguration
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateZoomStateSetting (globalSettings);
         this.activateChannelTouchSetting (globalSettings);
+        this.activateNewClipLengthSetting (globalSettings);
     }
 
 

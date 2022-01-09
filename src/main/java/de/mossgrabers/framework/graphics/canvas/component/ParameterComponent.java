@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.graphics.canvas.component;
@@ -27,7 +27,7 @@ public class ParameterComponent extends MenuComponent
     private final String  paramName;
     private final String  paramValueText;
     private final int     paramValue;
-    private int           modulatedParamValue;
+    private final int     modulatedParamValue;
     private final boolean isTouched;
 
 
@@ -117,7 +117,7 @@ public class ParameterComponent extends MenuComponent
      */
     public ParameterComponent (final String menuName, final boolean isMenuSelected, final String name, final ChannelType type, final ColorEx color, final boolean isSelected, final String paramName, final int paramValue, final int modulatedParamValue, final String paramValueText, final boolean isTouched)
     {
-        super (menuName, isMenuSelected, name, ChannelSelectComponent.getIcon (type), color, isSelected, true);
+        super (menuName, isMenuSelected, name, ChannelSelectComponent.getIcon (type, false), color, isSelected, true);
 
         this.paramName = paramName;
         this.paramValue = paramValue;
@@ -136,9 +136,9 @@ public class ParameterComponent extends MenuComponent
         final IGraphicsContext gc = info.getContext ();
         final IGraphicsDimensions dimensions = info.getDimensions ();
         final IGraphicsConfiguration configuration = info.getConfiguration ();
-        final double left = info.getBounds ().getLeft ();
-        final double width = info.getBounds ().getWidth ();
-        final double height = info.getBounds ().getHeight ();
+        final double left = info.getBounds ().left ();
+        final double width = info.getBounds ().width ();
+        final double height = info.getBounds ().height ();
 
         final double separatorSize = dimensions.getSeparatorSize ();
         final double menuHeight = dimensions.getMenuHeight ();
@@ -208,14 +208,10 @@ public class ParameterComponent extends MenuComponent
     {
         if (this == obj)
             return true;
-        if (!super.equals (obj))
-            return false;
-        if (this.getClass () != obj.getClass ())
+        if (!super.equals (obj) || this.getClass () != obj.getClass ())
             return false;
         final ParameterComponent other = (ParameterComponent) obj;
-        if (this.isTouched != other.isTouched)
-            return false;
-        if (this.modulatedParamValue != other.modulatedParamValue)
+        if (this.isTouched != other.isTouched || this.modulatedParamValue != other.modulatedParamValue)
             return false;
         if (this.paramName == null)
         {

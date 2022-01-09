@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.parameterprovider.track;
@@ -59,7 +59,8 @@ public abstract class AbstractTrackParameterProvider extends AbstractParameterPr
 
         // Monitor switching between the instrument/audio and effect track banks - must always be
         // active!
-        this.model.addTrackBankObserver (this);
+        if (this.model != null)
+            this.model.addTrackBankObserver (this);
     }
 
 

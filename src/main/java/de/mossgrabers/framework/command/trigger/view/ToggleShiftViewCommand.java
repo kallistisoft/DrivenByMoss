@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.command.trigger.view;
@@ -23,6 +23,10 @@ import de.mossgrabers.framework.view.Views;
  */
 public class ToggleShiftViewCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
+    private final ViewManager viewManager;
+    private boolean           isCombi;
+
+
     /**
      * Constructor.
      *
@@ -32,6 +36,8 @@ public class ToggleShiftViewCommand<S extends IControlSurface<C>, C extends Conf
     public ToggleShiftViewCommand (final IModel model, final S surface)
     {
         super (model, surface);
+
+        this.viewManager = this.surface.getViewManager ();
     }
 
 
@@ -39,16 +45,29 @@ public class ToggleShiftViewCommand<S extends IControlSurface<C>, C extends Conf
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        if (event == ButtonEvent.LONG)
-            return;
+        switch (event)
+        {
+            case DOWN:
+                this.isCombi = false;
+                if (this.viewManager.isActive (Views.SHIFT)) {
+                    this.viewManager.restore ();
+                    this.model.getHost().showNotification( viewManager.getActive().getName() );
+                } else {
+                    this.viewManager.setTemporary (Views.SHIFT);
+                    this.model.getHost().showNotification("Shift");
+                }
+                break;
 
-        final ViewManager viewManager = this.surface.getViewManager ();
-        if (event == ButtonEvent.DOWN && !viewManager.isActive (Views.SHIFT)) {
-            viewManager.setTemporary(Views.SHIFT);
-            this.model.getHost().showNotification("Shift");
-        } else if (event == ButtonEvent.UP && viewManager.isActive (Views.SHIFT)) {
-            viewManager.restore();
-            this.model.getHost().showNotification( viewManager.getActive().getName() );
+            case LONG:
+                this.isCombi = true;
+                return;
+
+            case UP:
+                if (this.isCombi && this.viewManager.isActive (Views.SHIFT)) {
+                    this.viewManager.restore ();
+                    this.model.getHost().showNotification( viewManager.getActive().getName() );
+                }
+                break;
         }
 
         this.surface.setKnobSensitivityIsSlow (this.surface.isShiftPressed ());

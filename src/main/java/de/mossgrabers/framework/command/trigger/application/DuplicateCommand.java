@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.command.trigger.application;
@@ -35,6 +35,21 @@ public class DuplicateCommand<S extends IControlSurface<C>, C extends Configurat
     public DuplicateCommand (final IModel model, final S surface)
     {
         super (model, surface);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void execute (final ButtonEvent event, final int velocity)
+    {
+        if (this.surface.isSelectPressed ())
+        {
+            if (event == ButtonEvent.UP)
+                this.model.getProject ().createScene ();
+            return;
+        }
+
+        super.execute (event, velocity);
     }
 
 

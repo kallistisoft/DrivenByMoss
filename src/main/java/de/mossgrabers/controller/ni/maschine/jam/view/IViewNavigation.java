@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ni.maschine.jam.view;
@@ -16,7 +16,7 @@ public interface IViewNavigation
 {
     /**
      * Can be scrolled?
-     * 
+     *
      * @param direction The direction to check
      * @return True if it can be scrolled
      */

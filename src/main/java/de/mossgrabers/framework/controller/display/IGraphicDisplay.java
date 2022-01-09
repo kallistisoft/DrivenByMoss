@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.controller.display;
@@ -115,8 +115,9 @@ public interface IGraphicDisplay extends IDisplay
      * @param recarm The recording armed state
      * @param isActive True if channel is activated
      * @param crossfadeMode Crossfade mode (0-2)
+     * @param isPinned True if the track is pinned
      */
-    void addChannelElement (String topMenu, boolean isTopMenuOn, String bottomMenu, ChannelType type, ColorEx bottomMenuColor, boolean isBottomMenuOn, int volume, int modulatedVolume, String volumeStr, int pan, int modulatedPan, String panStr, int vuLeft, int vuRight, boolean mute, boolean solo, boolean recarm, boolean isActive, int crossfadeMode);
+    void addChannelElement (String topMenu, boolean isTopMenuOn, String bottomMenu, ChannelType type, ColorEx bottomMenuColor, boolean isBottomMenuOn, int volume, int modulatedVolume, String volumeStr, int pan, int modulatedPan, String panStr, int vuLeft, int vuRight, boolean mute, boolean solo, boolean recarm, boolean isActive, int crossfadeMode, boolean isPinned);
 
 
     /**
@@ -142,8 +143,9 @@ public interface IGraphicDisplay extends IDisplay
      * @param recarm The recording armed state
      * @param isActive True if channel is activated
      * @param crossfadeMode Crossfade mode (0-2)
+     * @param isPinned True if the track is pinned
      */
-    void addChannelElement (int channelType, String topMenu, boolean isTopMenuOn, String bottomMenu, ChannelType type, ColorEx bottomMenuColor, boolean isBottomMenuOn, int volume, int modulatedVolume, String volumeStr, int pan, int modulatedPan, String panStr, int vuLeft, int vuRight, boolean mute, boolean solo, boolean recarm, boolean isActive, int crossfadeMode);
+    void addChannelElement (int channelType, String topMenu, boolean isTopMenuOn, String bottomMenu, ChannelType type, ColorEx bottomMenuColor, boolean isBottomMenuOn, int volume, int modulatedVolume, String volumeStr, int pan, int modulatedPan, String panStr, int vuLeft, int vuRight, boolean mute, boolean solo, boolean recarm, boolean isActive, int crossfadeMode, boolean isPinned);
 
 
     /**

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw.resource;
@@ -23,7 +23,7 @@ public final class ResourceHandler
 
 
     /**
-     * Initialise the handler.
+     * Initialize the handler.
      *
      * @param host The controller host
      */
@@ -41,6 +41,7 @@ public final class ResourceHandler
         addSVGImage ("track/crossfade_ab.svg");
         addSVGImage ("track/crossfade_b.svg");
         addSVGImage ("track/group_track.svg");
+        addSVGImage ("track/group_track_open.svg");
         addSVGImage ("track/hybrid_track.svg");
         addSVGImage ("track/instrument_track.svg");
         addSVGImage ("track/master_track.svg");
@@ -58,6 +59,7 @@ public final class ResourceHandler
         addSVGImage ("device/device_note.svg");
         addSVGImage ("device/device_plugin.svg");
 
+        addSVGImage ("pin.svg");
         addSVGImage ("user.svg");
     }
 

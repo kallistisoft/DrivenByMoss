@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.graphics.canvas.component;
@@ -44,9 +44,9 @@ public class ListComponent implements IComponent
         final IGraphicsContext gc = info.getContext ();
         final IGraphicsDimensions dimensions = info.getDimensions ();
         final IGraphicsConfiguration configuration = info.getConfiguration ();
-        final double left = info.getBounds ().getLeft ();
-        final double width = info.getBounds ().getWidth ();
-        final double height = info.getBounds ().getHeight ();
+        final double left = info.getBounds ().left ();
+        final double width = info.getBounds ().width ();
+        final double height = info.getBounds ().height ();
 
         final double separatorSize = dimensions.getSeparatorSize ();
         final double inset = dimensions.getInset ();
@@ -86,9 +86,7 @@ public class ListComponent implements IComponent
     {
         if (this == obj)
             return true;
-        if (obj == null)
-            return false;
-        if (this.getClass () != obj.getClass ())
+        if (obj == null || this.getClass () != obj.getClass ())
             return false;
         final ListComponent other = (ListComponent) obj;
         return this.items.equals (other.items);

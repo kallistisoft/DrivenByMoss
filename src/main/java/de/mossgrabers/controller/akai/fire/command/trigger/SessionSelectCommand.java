@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.akai.fire.command.trigger;
@@ -42,7 +42,7 @@ public class SessionSelectCommand extends ViewMultiSelectCommand<FireControlSurf
             return;
 
         final IView view = this.surface.getViewManager ().get (Views.SESSION);
-        if (view instanceof SessionView)
-            ((SessionView) view).toggleBirdsEyeView ();
+        if (view instanceof final SessionView sessionView)
+            sessionView.toggleBirdsEyeView ();
     }
 }

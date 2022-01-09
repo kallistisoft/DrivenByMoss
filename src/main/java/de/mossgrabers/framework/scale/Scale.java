@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.scale;
@@ -133,12 +133,12 @@ public enum Scale
     // @formatter:on
 
 
-    private String                 name;
-    private int []                 intervals;
-    private Set<Integer>           scaleKeys    = new HashSet<> (7);
-    private Map<Integer, Integer>  indexInScale = new HashMap<> (7);
+    private String                      name;
+    private int []                      intervals;
+    private final Set<Integer>          scaleKeys    = new HashSet<> (7);
+    private final Map<Integer, Integer> indexInScale = new HashMap<> (7);
 
-    private static final String [] SCALE_NAMES;
+    private static final String []      SCALE_NAMES;
     static
     {
         final Scale [] values = Scale.values ();

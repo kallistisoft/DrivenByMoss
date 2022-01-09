@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.akai.apc.command.trigger;
@@ -28,7 +28,7 @@ import java.util.Optional;
  */
 public class SelectTrackSendOrClipLengthCommand extends AbstractTriggerCommand<APCControlSurface, APCConfiguration>
 {
-    private int index;
+    private final int index;
 
 
     /**
@@ -90,7 +90,7 @@ public class SelectTrackSendOrClipLengthCommand extends AbstractTriggerCommand<A
             return;
         }
 
-        this.model.getCurrentTrackBank ().getItem (this.index).select ();
+        this.model.getCurrentTrackBank ().getItem (this.index).selectOrExpandGroup ();
     }
 
 

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.featuregroup;
@@ -101,5 +101,22 @@ public abstract class AbstractFeatureGroup<S extends IControlSurface<C>, C exten
         final ITrack cursorTrack = this.model.getCursorTrack ();
         if (cursorTrack.doesExist ())
             viewManager.setPreferredView (cursorTrack.getPosition (), viewID);
+    }
+
+
+    /**
+     * Tests if the button is pressed. If yes, the button UP event is consumed.
+     *
+     * @param buttonID The button to test
+     * @return True if button is pressed
+     */
+    protected boolean isButtonCombination (final ButtonID buttonID)
+    {
+        if (this.surface.isPressed (buttonID))
+        {
+            this.surface.setTriggerConsumed (buttonID);
+            return true;
+        }
+        return false;
     }
 }

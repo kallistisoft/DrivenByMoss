@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.osc.module;
@@ -178,11 +178,8 @@ public class TrackModule extends AbstractModule
         writer.sendOSC (trackAddress + "canHoldAudioData", track.canHoldAudioData (), dump);
         writer.sendOSC (trackAddress + "position", track.getPosition (), dump);
 
-        if (track instanceof ICursorTrack)
-        {
-            final ICursorTrack cursorTrack = (ICursorTrack) track;
+        if (track instanceof final ICursorTrack cursorTrack)
             writer.sendOSC (trackAddress + "pinned", cursorTrack.isPinned (), dump);
-        }
 
         final ISendBank sendBank = track.getSendBank ();
         for (int i = 0; i < sendBank.getPageSize (); i++)
@@ -425,7 +422,7 @@ public class TrackModule extends AbstractModule
             case TAG_SELECT:
             case TAG_SELECTED:
                 if (isTrigger (value))
-                    track.select ();
+                    track.selectOrExpandGroup ();
                 break;
 
             case TAG_DUPLICATE:
@@ -513,9 +510,8 @@ public class TrackModule extends AbstractModule
                 break;
 
             case "pinned":
-                if (track instanceof ICursorTrack)
+                if (track instanceof final ICursorTrack cursorTrack)
                 {
-                    final ICursorTrack cursorTrack = (ICursorTrack) track;
                     if (value == null)
                         cursorTrack.togglePinned ();
                     else

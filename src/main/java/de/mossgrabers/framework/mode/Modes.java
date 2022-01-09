@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.mode;
@@ -25,6 +25,10 @@ public enum Modes
     PAN,
     /** Edit cross-fader settings of all tracks. */
     CROSSFADER,
+    /** Edit cross-fader setting A of all tracks. */
+    CROSSFADE_MODE_A,
+    /** Edit cross-fader setting B of all tracks. */
+    CROSSFADE_MODE_B,
     /** Mode to arm tracks for recording. */
     REC_ARM,
     /** Mode to select tracks. */
@@ -140,6 +144,10 @@ public enum Modes
     POSITION,
     /** Tempo mode. */
     TEMPO,
+    /** Loop start mode. */
+    LOOP_START,
+    /** Loop length mode. */
+    LOOP_LENGTH,
     /** A user mode. */
     USER,
     /** A mode that does nothing. */

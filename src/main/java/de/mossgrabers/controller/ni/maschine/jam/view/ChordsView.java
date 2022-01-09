@@ -1,11 +1,12 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ni.maschine.jam.view;
 
+import de.mossgrabers.controller.ni.maschine.core.command.trigger.EncoderMode;
+import de.mossgrabers.controller.ni.maschine.core.view.IMaschineView;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
-import de.mossgrabers.controller.ni.maschine.jam.command.trigger.EncoderMode;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
 import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -21,7 +22,7 @@ import de.mossgrabers.framework.view.Views;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class ChordsView extends AbstractChordView<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamView, IViewNavigation
+public class ChordsView extends AbstractChordView<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineView, IViewNavigation
 {
     /**
      * Constructor.

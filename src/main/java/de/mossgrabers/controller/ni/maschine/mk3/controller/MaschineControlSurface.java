@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ni.maschine.mk3.controller;
@@ -27,6 +27,11 @@ public class MaschineControlSurface extends AbstractMaschineControlSurface<Masch
     // MIDI CC
     public static final int TOUCHSTRIP        = 1;
     public static final int TOUCHSTRIP_TOUCH  = 2;
+
+    public static final int FOOTSWITCH1_TIP   = 3;
+    public static final int FOOTSWITCH1_RING  = 4;
+    public static final int FOOTSWITCH2_TIP   = 5;
+    public static final int FOOTSWITCH2_RING  = 6;
 
     public static final int ENCODER           = 7;
     public static final int ENCODER_PUSH      = 8;
@@ -105,6 +110,32 @@ public class MaschineControlSurface extends AbstractMaschineControlSurface<Masch
     public static final int PAGE_LEFT         = 110;
     public static final int PAGE_RIGHT        = 111;
 
+    //
+    // Specific Maschine Studio controls
+    //
+
+    public static final int EDIT_COPY         = 112;
+    public static final int EDIT_PASTE        = 113;
+    public static final int EDIT_NOTE         = 114;
+    public static final int EDIT_NUDGE        = 115;
+    public static final int EDIT_UNDO         = 116;
+    public static final int EDIT_REDO         = 117;
+    public static final int EDIT_QUANTIZE     = 118;
+    public static final int EDIT_CLEAR        = 119;
+
+    public static final int MONITOR_IN1       = 120;
+    public static final int MONITOR_IN2       = 121;
+    public static final int MONITOR_IN3       = 122;
+    public static final int MONITOR_IN4       = 123;
+    public static final int MONITOR_MST       = 124;
+    public static final int MONITOR_GRP       = 125;
+    public static final int MONITOR_SND       = 126;
+    public static final int MONITOR_CUE       = 127;
+    public static final int MONITOR_ENCODER   = 10;
+
+    public static final int NAVIGATE_BACK     = 11;
+    public static final int METRO             = 14;
+
     private int             ribbonValue       = -1;
 
 
@@ -120,7 +151,7 @@ public class MaschineControlSurface extends AbstractMaschineControlSurface<Masch
      */
     public MaschineControlSurface (final IHost host, final ColorManager colorManager, final Maschine maschine, final MaschineConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
-        super (host, configuration, colorManager, maschine, output, input, new MaschinePadGrid (colorManager, output), 800, maschine.getHeight ());
+        super (host, configuration, colorManager, maschine, output, input, new MaschinePadGrid (colorManager, output), maschine.getWidth (), maschine.getHeight ());
     }
 
 

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.command.trigger.device;
@@ -23,9 +23,9 @@ import java.util.Date;
  */
 public class DeviceParamsKnobRowCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractContinuousCommand<S, C>
 {
-    private int     index;
-    private long    moveStartTime;
-    private boolean isKnobMoving;
+    private final int index;
+    private long      moveStartTime;
+    private boolean   isKnobMoving;
 
 
     /**

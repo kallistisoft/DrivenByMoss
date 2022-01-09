@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.novation.sl.view;
@@ -21,8 +21,8 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class TransportControl
 {
-    private SLControlSurface                                     surface;
-    private IModel                                               model;
+    private final SLControlSurface                               surface;
+    private final IModel                                         model;
     private boolean                                              isRewinding;
     private boolean                                              isForwarding;
     private final PlayCommand<SLControlSurface, SLConfiguration> playCommand;
@@ -76,7 +76,7 @@ public class TransportControl
 
             case 5:
                 if (event == ButtonEvent.DOWN)
-                    this.model.getTransport ().record ();
+                    this.model.getTransport ().startRecording ();
                 break;
 
             case 6:

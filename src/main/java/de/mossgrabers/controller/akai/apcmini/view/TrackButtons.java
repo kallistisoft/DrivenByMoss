@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.akai.apcmini.view;
@@ -19,8 +19,8 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class TrackButtons
 {
-    private APCminiControlSurface surface;
-    private IModel                model;
+    private final APCminiControlSurface surface;
+    private final IModel                model;
 
 
     /**

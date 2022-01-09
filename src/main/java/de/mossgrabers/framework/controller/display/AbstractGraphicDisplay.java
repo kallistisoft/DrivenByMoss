@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.controller.display;
@@ -71,7 +71,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
     public static final int                GRID_ELEMENT_LIST               = 8;
 
     /** Timeout for displaying the notification message. */
-    private static final int               TIMEOUT                         = 2;
+    private static final int               TIMEOUT                         = 1;
 
     private final AtomicInteger            counter                         = new AtomicInteger ();
     private final ScheduledExecutorService executor                        = Executors.newSingleThreadScheduledExecutor ();
@@ -145,11 +145,12 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
         this.executor.shutdown ();
         try
         {
-            this.executor.awaitTermination (5, TimeUnit.SECONDS);
+            if (!this.executor.awaitTermination (5, TimeUnit.SECONDS))
+                this.host.error ("Display send executor did not end in 5 seconds.");
         }
         catch (final InterruptedException ex)
         {
-            this.host.error ("USB display send executor did not end in 10 seconds. Interrupted.", ex);
+            this.host.error ("Display send executor interrupted.", ex);
             Thread.currentThread ().interrupt ();
         }
     }
@@ -252,15 +253,15 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
 
     /** {@inheritDoc} */
     @Override
-    public void addChannelElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final ColorEx bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vuLeft, final int vuRight, final boolean mute, final boolean solo, final boolean recarm, final boolean isActive, final int crossfadeMode)
+    public void addChannelElement (final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final ColorEx bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vuLeft, final int vuRight, final boolean mute, final boolean solo, final boolean recarm, final boolean isActive, final int crossfadeMode, final boolean isPinned)
     {
-        this.addChannelElement (GRID_ELEMENT_CHANNEL_ALL, topMenu, isTopMenuOn, bottomMenu, type, bottomMenuColor, isBottomMenuOn, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vuLeft, vuRight, mute, solo, recarm, isActive, crossfadeMode);
+        this.addChannelElement (GRID_ELEMENT_CHANNEL_ALL, topMenu, isTopMenuOn, bottomMenu, type, bottomMenuColor, isBottomMenuOn, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vuLeft, vuRight, mute, solo, recarm, isActive, crossfadeMode, isPinned);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void addChannelElement (final int channelType, final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final ColorEx bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vuLeft, final int vuRight, final boolean mute, final boolean solo, final boolean recarm, final boolean isActive, final int crossfadeMode)
+    public void addChannelElement (final int channelType, final String topMenu, final boolean isTopMenuOn, final String bottomMenu, final ChannelType type, final ColorEx bottomMenuColor, final boolean isBottomMenuOn, final int volume, final int modulatedVolume, final String volumeStr, final int pan, final int modulatedPan, final String panStr, final int vuLeft, final int vuRight, final boolean mute, final boolean solo, final boolean recarm, final boolean isActive, final int crossfadeMode, final boolean isPinned)
     {
         int editType;
         switch (channelType)
@@ -278,7 +279,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
                 editType = ChannelComponent.EDIT_TYPE_ALL;
                 break;
         }
-        this.addElement (new ChannelComponent (editType, topMenu, isTopMenuOn, bottomMenu, bottomMenuColor, isBottomMenuOn, type, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vuLeft, vuRight, mute, solo, recarm, isActive, crossfadeMode));
+        this.addElement (new ChannelComponent (editType, topMenu, isTopMenuOn, bottomMenu, bottomMenuColor, isBottomMenuOn, type, volume, modulatedVolume, volumeStr, pan, modulatedPan, panStr, vuLeft, vuRight, mute, solo, recarm, isActive, crossfadeMode, isPinned));
     }
 
 

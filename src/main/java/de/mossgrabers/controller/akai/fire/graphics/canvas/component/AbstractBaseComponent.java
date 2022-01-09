@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.akai.fire.graphics.canvas.component;
@@ -54,9 +54,7 @@ public abstract class AbstractBaseComponent implements IComponent
     {
         if (this == obj)
             return true;
-        if (obj == null)
-            return false;
-        if (this.getClass () != obj.getClass ())
+        if (obj == null || this.getClass () != obj.getClass ())
             return false;
         final AbstractBaseComponent other = (AbstractBaseComponent) obj;
         if (this.label == null)

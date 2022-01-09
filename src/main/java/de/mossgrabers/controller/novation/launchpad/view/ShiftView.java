@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.novation.launchpad.view;
@@ -93,6 +93,13 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
         // Stop all
         padGrid.light (51, LaunchpadColorManager.LAUNCHPAD_COLOR_RED);
 
+        // Note Repeat Octave Range up/down
+        padGrid.light (88, LaunchpadColorManager.LAUNCHPAD_COLOR_RED);
+        padGrid.light (89, LaunchpadColorManager.LAUNCHPAD_COLOR_RED);
+
+        for (int i = 90; i < 91; i++)
+            padGrid.light (i, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
+
         if (this.surface.isPro ())
         {
             for (int i = 44; i < 51; i++)
@@ -106,8 +113,6 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
             for (int i = 75; i < 79; i++)
                 padGrid.light (i, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
             for (int i = 83; i < 87; i++)
-                padGrid.light (i, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
-            for (int i = 88; i < 91; i++)
                 padGrid.light (i, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
             for (int i = 92; i < 97; i++)
                 padGrid.light (i, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
@@ -162,9 +167,6 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
         padGrid.light (85, LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_YELLOW);
 
         padGrid.light (86, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
-
-        for (int i = 88; i < 91; i++)
-            padGrid.light (i, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK);
 
         // Metronome
         padGrid.light (92, transport.isMetronomeOn () ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO);
@@ -258,6 +260,17 @@ public class ShiftView extends AbstractView<LaunchpadControlSurface, LaunchpadCo
             case 58:
                 this.setNoteLength (7);
                 return;
+
+            case 88:
+                final int octave = Math.max (0, configuration.getNoteRepeatOctave () - 1);
+                configuration.setNoteRepeatOctave (octave);
+                this.surface.getDisplay ().notify ("Note Repeat Octave Range: " + octave);
+                break;
+            case 89:
+                final int octave2 = Math.min (8, configuration.getNoteRepeatOctave () + 1);
+                configuration.setNoteRepeatOctave (octave2);
+                this.surface.getDisplay ().notify ("Note Repeat Octave Range: " + octave2);
+                break;
 
             case 91:
                 final boolean enabled = !configuration.isAccentActive ();

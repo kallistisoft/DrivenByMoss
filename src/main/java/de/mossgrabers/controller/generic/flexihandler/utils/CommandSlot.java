@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.generic.flexihandler.utils;
@@ -28,11 +28,11 @@ public class CommandSlot
     /** The MMC type. */
     public static final int TYPE_MMC              = 4;
 
-    private int             type                  = -1;
+    private int             type                  = TYPE_OFF;
     private int             number                = 0;
     private int             midiChannel           = 0;
     private boolean         isHighRes             = false;
-    private int             knobMode              = 0;
+    private KnobMode        knobMode              = KnobMode.ABSOLUTE;
     private boolean         sendValue             = false;
     private boolean         sendValueWhenReceived = false;
     private FlexiCommand    command               = FlexiCommand.OFF;
@@ -96,7 +96,7 @@ public class CommandSlot
      *
      * @return The knob mode
      */
-    public int getKnobMode ()
+    public KnobMode getKnobMode ()
     {
         return this.knobMode;
     }
@@ -162,7 +162,7 @@ public class CommandSlot
      *
      * @param value The index
      */
-    public void setKnobMode (final int value)
+    public void setKnobMode (final KnobMode value)
     {
         this.knobMode = value;
     }

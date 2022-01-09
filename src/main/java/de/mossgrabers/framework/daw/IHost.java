@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw;
@@ -41,6 +41,12 @@ public interface IHost
      * @return True if the DAW supports editing
      */
     boolean supports (Capability capability);
+
+
+    /**
+     * Restart the extension.
+     */
+    void restart ();
 
 
     /**
@@ -121,7 +127,7 @@ public interface IHost
      * @param values The values for the message
      * @return The created message
      */
-    IOpenSoundControlMessage createOSCMessage (String address, List<Object> values);
+    IOpenSoundControlMessage createOSCMessage (String address, List<?> values);
 
 
     /**
@@ -186,7 +192,7 @@ public interface IHost
 
 
     /**
-     * Get the metadata of the audiu effect which can be created.
+     * Get the metadata of the audio effect which can be created.
      *
      * @return The metadata
      */

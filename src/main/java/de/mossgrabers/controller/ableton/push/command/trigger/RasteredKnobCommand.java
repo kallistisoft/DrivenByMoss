@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ableton.push.command.trigger;
@@ -46,8 +46,13 @@ public class RasteredKnobCommand extends TempoCommand<PushControlSurface, PushCo
             return;
         }
 
-        super.execute (value);
+        if (this.surface.isSelectPressed ())
+        {
+            this.transport.changeLoopStart (this.model.getValueChanger ().isIncrease (value), this.surface.isKnobSensitivitySlow ());
+            return;
+        }
 
+        super.execute (value);
         this.mvHelper.notifyTempo ();
     }
 
@@ -57,6 +62,14 @@ public class RasteredKnobCommand extends TempoCommand<PushControlSurface, PushCo
     public void execute (final ButtonEvent event, final int velocity)
     {
         final boolean activate = event != ButtonEvent.UP;
+
+        if (this.surface.isSelectPressed ())
+        {
+            if (activate)
+                this.mvHelper.delayDisplay ( () -> "Loop Start: " + this.transport.getLoopStartBeatText ());
+            return;
+        }
+
         this.transport.setTempoIndication (activate);
         if (activate)
             this.mvHelper.notifyTempo ();

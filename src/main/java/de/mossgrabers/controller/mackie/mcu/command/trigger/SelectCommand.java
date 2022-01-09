@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.mackie.mcu.command.trigger;
@@ -64,10 +64,19 @@ public class SelectCommand extends AbstractTriggerCommand<MCUControlSurface, MCU
         if (event == ButtonEvent.UP)
         {
             final ITrack track = trackBank.getItem (this.channel);
-            if (track.isSelected () && !configuration.isTrackNavigationFlat ())
-                track.enter ();
-            else
+            if (!track.isSelected ())
+            {
                 track.select ();
+                return;
+            }
+
+            if (configuration.isTrackNavigationFlat ())
+            {
+                if (track.isGroup ())
+                    track.toggleGroupExpanded ();
+            }
+            else
+                track.enter ();
         }
         else if (event == ButtonEvent.LONG && !configuration.isTrackNavigationFlat ())
         {

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.akai.apcmini.command.trigger;
@@ -20,7 +20,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class TrackSelectCommand extends AbstractTriggerCommand<APCminiControlSurface, APCminiConfiguration>
 {
-    private int index;
+    private final int index;
 
 
     /**

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw;
@@ -57,7 +57,7 @@ public interface ITransport extends IObserverManagement
     /**
      * Start arranger recording.
      */
-    void record ();
+    void startRecording ();
 
 
     /**
@@ -344,7 +344,41 @@ public interface ITransport extends IObserverManagement
 
 
     /**
-     * Set punch-in dis/enabled in the transport.
+     * Get the loop start position formatted as measures and beats.
+     *
+     * @return The formatted text
+     */
+    String getLoopStartBeatText ();
+
+
+    /**
+     * Changes the loop start position.
+     *
+     * @param increase If true move to the right otherwise left
+     * @param slow Change slowly
+     */
+    void changeLoopStart (boolean increase, boolean slow);
+
+
+    /**
+     * Get the loop length formatted as measures and beats.
+     *
+     * @return The formatted text
+     */
+    String getLoopLengthBeatText ();
+
+
+    /**
+     * Changes the loop length position.
+     *
+     * @param increase If true move to the right otherwise left
+     * @param slow Change slowly
+     */
+    void changeLoopLength (boolean increase, boolean slow);
+
+
+    /**
+     * Set punch-in dis-/enabled in the transport.
      *
      * @param enable True to enable
      */
@@ -613,4 +647,26 @@ public interface ITransport extends IObserverManagement
 
         this.setDefaultLaunchQuantization (launchQuantizations[pos]);
     }
+
+
+    /**
+     * Is the fill mode active?
+     *
+     * @return True if active
+     */
+    boolean isFillModeActive ();
+
+
+    /**
+     * Set the fill mode active.
+     *
+     * @param isActive True to activate
+     */
+    void setFillModeActive (boolean isActive);
+
+
+    /**
+     * Toggle the fill mode.
+     */
+    void toggleFillModeActive ();
 }

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.featuregroup;
@@ -35,7 +35,7 @@ public class FeatureGroupManager<E extends Enum<E>, F extends IFeatureGroup>
 
 
     /**
-     * Construcor
+     * Constructor.
      *
      * @param clazz The specific class of the feature group
      */

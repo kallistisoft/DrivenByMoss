@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.generic.flexihandler;
@@ -8,6 +8,7 @@ import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
 import de.mossgrabers.controller.generic.flexihandler.utils.FlexiHandlerException;
+import de.mossgrabers.controller.generic.flexihandler.utils.KnobMode;
 import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
@@ -27,12 +28,13 @@ public class SceneHandler extends AbstractHandler
      * @param model The model
      * @param surface The surface
      * @param configuration The configuration
-     * @param relative2ValueChanger The relative value changer variant 2
-     * @param relative3ValueChanger The relative value changer variant 3
+     * @param absoluteLowResValueChanger The default absolute value changer in low res mode
+     * @param signedBitRelativeValueChanger The signed bit relative value changer
+     * @param offsetBinaryRelativeValueChanger The offset binary relative value changer
      */
-    public SceneHandler (final IModel model, final GenericFlexiControlSurface surface, final GenericFlexiConfiguration configuration, final IValueChanger relative2ValueChanger, final IValueChanger relative3ValueChanger)
+    public SceneHandler (final IModel model, final GenericFlexiControlSurface surface, final GenericFlexiConfiguration configuration, final IValueChanger absoluteLowResValueChanger, final IValueChanger signedBitRelativeValueChanger, final IValueChanger offsetBinaryRelativeValueChanger)
     {
-        super (model, surface, configuration, relative2ValueChanger, relative3ValueChanger);
+        super (model, surface, configuration, absoluteLowResValueChanger, signedBitRelativeValueChanger, offsetBinaryRelativeValueChanger);
     }
 
 
@@ -52,6 +54,7 @@ public class SceneHandler extends AbstractHandler
             FlexiCommand.SCENE_8_LAUNCH_SCENE,
             FlexiCommand.SCENE_SELECT_PREVIOUS_BANK,
             FlexiCommand.SCENE_SELECT_NEXT_BANK,
+            FlexiCommand.SCENE_CREATE_SCENE,
             FlexiCommand.SCENE_CREATE_SCENE_FROM_PLAYING_CLIPS
         };
     }
@@ -67,7 +70,7 @@ public class SceneHandler extends AbstractHandler
 
     /** {@inheritDoc} */
     @Override
-    public void handle (final FlexiCommand command, final int knobMode, final MidiValue value)
+    public void handle (final FlexiCommand command, final KnobMode knobMode, final MidiValue value)
     {
         final boolean isButtonPressed = this.isButtonPressed (knobMode, value);
 
@@ -100,6 +103,12 @@ public class SceneHandler extends AbstractHandler
             case SCENE_SELECT_NEXT_BANK:
                 if (isButtonPressed)
                     this.model.getSceneBank ().selectNextPage ();
+                break;
+
+            // Scene: Create Scene
+            case SCENE_CREATE_SCENE:
+                if (isButtonPressed)
+                    this.model.getProject ().createScene ();
                 break;
 
             // Scene: Create Scene from playing Clips

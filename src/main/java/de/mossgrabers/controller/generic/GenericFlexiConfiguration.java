@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.generic;
@@ -8,9 +8,11 @@ import de.mossgrabers.controller.generic.controller.CommandCategory;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.flexihandler.AbstractHandler;
 import de.mossgrabers.controller.generic.flexihandler.utils.CommandSlot;
+import de.mossgrabers.controller.generic.flexihandler.utils.KnobMode;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IActionSetting;
 import de.mossgrabers.framework.configuration.IEnumSetting;
+import de.mossgrabers.framework.configuration.IIntegerSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.configuration.IStringSetting;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
@@ -68,15 +70,6 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private static final String                      CATEGORY_OPTIONS             = "Options";
 
     private static final String []                   NAMES                        = FlexiCommand.getNames ();
-
-    private static final String []                   OPTIONS_KNOBMODE             =
-    {
-        "Absolute (push button: Button down > 0, button up = 0)",
-        "Relative (1-64 increments, 127-65 decrements)",
-        "Relative (65-127 increments, 63-0 decrements)",
-        "Relative (1-63 increments, 65-127 decrements)",
-        "Absolute (toggle button: 1st press > 0, 2nd press = 0)"
-    };
 
     /** The types. */
     public static final List<String>                 OPTIONS_TYPE                 = List.of ("Off", "CC", "Note", "Program Change", "Pitchbend", "MMC");
@@ -213,7 +206,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         "127 CC Poly Mode"
     );
 
-    /** The MIDI channel options. */
+
+    /** The Modes options. */
     private static final List<String>                MODES                     = List.of (
         "Track",
         "Volume",
@@ -229,6 +223,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         "Parameters"
     );
 
+    /** The MIDI channel options. */
     private static final List<String>                KEYBOARD_CHANNELS         = List.of (
         "Off",
         "1",
@@ -251,13 +246,18 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     );
     // @formatter:on
 
+    private static final List<String>                CONTROLLER_CHANNELS          = KEYBOARD_CHANNELS.subList (1, KEYBOARD_CHANNELS.size ());
     private static final List<String>                OPTIONS_RESOLUTION           = List.of ("7-bit", "14-bit");
 
     /** A setting of a slot has changed. */
     static final Integer                             SLOT_CHANGE                  = Integer.valueOf (1000);
+    /** The MPE on/off setting has changed. */
+    static final Integer                             ENABLED_MPE_ZONES            = Integer.valueOf (1001);
+    /** The MPE pitch bend sensitivity setting has changed. */
+    static final Integer                             MPE_PITCHBEND_RANGE          = Integer.valueOf (1002);
 
     /** The number of command slots. */
-    public static final int                          NUM_SLOTS                    = 200;
+    public static final int                          NUM_SLOTS                    = 300;
 
     private IEnumSetting                             slotSelectionSetting;
     private IEnumSetting                             typeSetting;
@@ -276,11 +276,11 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private IEnumSetting                             selectedModeSetting;
     private IStringSetting                           fileSetting;
 
-    private CommandSlot []                           commandSlots                 = new CommandSlot [NUM_SLOTS];
+    private final CommandSlot []                     commandSlots                 = new CommandSlot [NUM_SLOTS];
 
     private IValueObserver<FlexiCommand>             commandObserver;
     private String                                   filename;
-    private Object                                   syncMapUpdate                = new Object ();
+    private final Object                             syncMapUpdate                = new Object ();
     private int []                                   keyMap;
     private int                                      selectedSlot                 = 0;
 
@@ -289,13 +289,16 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private String                                   learnMidiChannelValue        = null;
     private boolean                                  learnResolution              = false;
 
-    private AtomicBoolean                            doNotFire                    = new AtomicBoolean (false);
-    private AtomicBoolean                            commandIsUpdating            = new AtomicBoolean (false);
-    private String []                                assignableFunctionActions    = new String [8];
+    private final AtomicBoolean                      doNotFire                    = new AtomicBoolean (false);
+    private final AtomicBoolean                      commandIsUpdating            = new AtomicBoolean (false);
+    private final String []                          assignableFunctionActions    = new String [8];
 
     private String                                   selectedMode                 = MODES.get (0);
 
+    private boolean                                  isMPEEnabled                 = false;
+    private int                                      mpePitchBendRange            = 48;
     private int                                      keyboardChannel              = 0;
+    private boolean                                  keyboardRouteTimbre          = false;
     private boolean                                  keyboardRouteModulation      = true;
     private boolean                                  keyboardRouteSustain         = true;
     private boolean                                  keyboardRoutePitchbend       = true;
@@ -375,9 +378,11 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
         this.typeSetting = globalSettings.getEnumSetting ("Type:", category, OPTIONS_TYPE, OPTIONS_TYPE.get (0));
         this.numberSetting = globalSettings.getEnumSetting ("Number:", category, NUMBER_NAMES, NUMBER_NAMES.get (0));
-        this.midiChannelSetting = globalSettings.getEnumSetting ("Midi Channel:", category, OPTIONS_MIDI_CHANNEL, OPTIONS_MIDI_CHANNEL[0]);
+        this.midiChannelSetting = globalSettings.getEnumSetting ("Midi Channel:", category, CONTROLLER_CHANNELS, CONTROLLER_CHANNELS.get (0));
         this.resolutionSetting = globalSettings.getEnumSetting ("Resolution:", category, OPTIONS_RESOLUTION, OPTIONS_RESOLUTION.get (0));
-        this.knobModeSetting = globalSettings.getEnumSetting ("Knob Mode:", category, OPTIONS_KNOBMODE, OPTIONS_KNOBMODE[0]);
+
+        final String [] knobModeLabels = KnobMode.getLabels ();
+        this.knobModeSetting = globalSettings.getEnumSetting ("Knob Mode:", category, knobModeLabels, knobModeLabels[0]);
 
         ///////////////////////////////////////////////
         // Selected Slot - MIDI device update
@@ -402,7 +407,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         }
 
         ///////////////////////////////////////////////
-        // Ex-/Import section
+        // Export/Import section
 
         category = "Load / Save";
 
@@ -442,7 +447,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             this.clearNoteMap ();
         });
         this.midiChannelSetting.addValueObserver (value -> {
-            this.getSelectedSlot ().setMidiChannel (AbstractConfiguration.lookupIndex (OPTIONS_MIDI_CHANNEL, value));
+            this.getSelectedSlot ().setMidiChannel (AbstractConfiguration.lookupIndex (CONTROLLER_CHANNELS, value));
             this.clearNoteMap ();
         });
         this.resolutionSetting.addValueObserver (value -> {
@@ -466,7 +471,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
         });
         this.knobModeSetting.addValueObserver (value -> {
-            this.getSelectedSlot ().setKnobMode (AbstractConfiguration.lookupIndex (OPTIONS_KNOBMODE, value));
+            this.getSelectedSlot ().setKnobMode (KnobMode.lookupByLabel (value));
             this.fixKnobMode ();
         });
         this.sendValueSetting.addValueObserver (value -> this.getSelectedSlot ().setSendValue (AbstractConfiguration.lookupIndex (AbstractConfiguration.ON_OFF_OPTIONS, value) > 0));
@@ -475,15 +480,40 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         ///////////////////////////////////////////////
         // Keyboard / Pads
 
-        final IEnumSetting keyboardMidiChannel = globalSettings.getEnumSetting ("Midi Channel", CATEGORY_KEYBOARD, KEYBOARD_CHANNELS, KEYBOARD_CHANNELS.get (1));
-        this.keyboardChannel = AbstractConfiguration.lookupIndex (KEYBOARD_CHANNELS, keyboardMidiChannel.get ()) - 1;
+        final IEnumSetting enableMPESetting = globalSettings.getEnumSetting ("MIDI Polyphonic Expression (MPE)", CATEGORY_KEYBOARD, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        this.isMPEEnabled = ON_OFF_OPTIONS[1].equals (enableMPESetting.get ());
 
-        final IEnumSetting routeModulationSetting = globalSettings.getEnumSetting ("Route Modulation", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
+        final IIntegerSetting pitchBendRangeSetting = globalSettings.getRangeSetting ("MPE Pitch Bend Sensitivity", CATEGORY_KEYBOARD, 1, 96, 1, "", 48);
+        this.mpePitchBendRange = pitchBendRangeSetting.get ().intValue ();
+
+        final IEnumSetting keyboardMidiChannelSetting = globalSettings.getEnumSetting ("Midi Channel", CATEGORY_KEYBOARD, KEYBOARD_CHANNELS, KEYBOARD_CHANNELS.get (1));
+        this.keyboardChannel = AbstractConfiguration.lookupIndex (KEYBOARD_CHANNELS, keyboardMidiChannelSetting.get ()) - 1;
+
+        final IEnumSetting routeTimbreSetting = globalSettings.getEnumSetting ("Route Timbre (CC74)", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[0]);
+        this.keyboardRouteTimbre = "On".equals (routeTimbreSetting.get ());
+
+        final IEnumSetting routeModulationSetting = globalSettings.getEnumSetting ("Route Modulation (CC01)", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
         this.keyboardRouteModulation = "On".equals (routeModulationSetting.get ());
-        final IEnumSetting routeSustainSetting = globalSettings.getEnumSetting ("Route Sustain", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
+
+        final IEnumSetting routeSustainSetting = globalSettings.getEnumSetting ("Route Sustain (CC64)", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
         this.keyboardRouteSustain = "On".equals (routeSustainSetting.get ());
+
         final IEnumSetting routePitchbendSetting = globalSettings.getEnumSetting ("Route Pitchbend", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
         this.keyboardRoutePitchbend = "On".equals (routePitchbendSetting.get ());
+
+        enableMPESetting.addValueObserver (value -> {
+            this.isMPEEnabled = ON_OFF_OPTIONS[1].equals (value);
+            this.notifyObservers (ENABLED_MPE_ZONES);
+
+            pitchBendRangeSetting.setEnabled (this.isMPEEnabled);
+            keyboardMidiChannelSetting.setEnabled (!this.isMPEEnabled);
+            routePitchbendSetting.setEnabled (!this.isMPEEnabled);
+        });
+
+        pitchBendRangeSetting.addValueObserver (value -> {
+            this.mpePitchBendRange = value.intValue ();
+            this.notifyObservers (MPE_PITCHBEND_RANGE);
+        });
 
         ///////////////////////////////////////////////
         // Options
@@ -556,7 +586,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         if (!command.isTrigger ())
             return;
         if (!AbstractHandler.isAbsolute (slot.getKnobMode ()) || slot.getType () == CommandSlot.TYPE_MMC)
-            this.knobModeSetting.set (OPTIONS_KNOBMODE[0]);
+            this.knobModeSetting.set (KnobMode.ABSOLUTE.getLabel ());
     }
 
 
@@ -601,8 +631,12 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         for (int i = 0; i < this.commandSlots.length; i++)
         {
             final CommandSlot slot = this.commandSlots[i];
-            if (slot.getCommand () != FlexiCommand.OFF && slot.getType () == type && slot.getMidiChannel () == midiChannel && (type == CommandSlot.TYPE_PITCH_BEND || slot.getNumber () == number))
-                return i;
+            if (slot.getCommand () != FlexiCommand.OFF && slot.getType () == type && (type == CommandSlot.TYPE_PITCH_BEND || slot.getNumber () == number))
+            {
+                final int channel = slot.getMidiChannel ();
+                if (channel == midiChannel || channel == 16)
+                    return i;
+            }
         }
         return -1;
     }
@@ -621,8 +655,12 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         for (int i = 0; i < this.commandSlots.length; i++)
         {
             final CommandSlot slot = this.commandSlots[i];
-            if (slot.getCommand () != FlexiCommand.OFF && slot.getType () == type && slot.getMidiChannel () == midiChannel && (type == CommandSlot.TYPE_PITCH_BEND || slot.getNumber () == number))
-                return Optional.of (new Pair<> (Integer.valueOf (i), slot));
+            if (slot.getCommand () != FlexiCommand.OFF && slot.getType () == type && (type == CommandSlot.TYPE_PITCH_BEND || slot.getNumber () == number))
+            {
+                final int channel = slot.getMidiChannel ();
+                if (channel == midiChannel || channel == 16)
+                    return Optional.of (new Pair<> (Integer.valueOf (i), slot));
+            }
         }
         return Optional.empty ();
     }
@@ -698,6 +736,28 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
 
     /**
+     * Get the MPE state.
+     *
+     * @return True if MPE is enabled for the keyboard
+     */
+    public boolean isMPEEndabled ()
+    {
+        return this.isMPEEnabled;
+    }
+
+
+    /**
+     * Get the MPE pitch bend range.
+     *
+     * @return The MPE Pitch bend range (1-96)
+     */
+    public int getMPEPitchBendRange ()
+    {
+        return this.mpePitchBendRange;
+    }
+
+
+    /**
      * Get the keyboard channel.
      *
      * @return -1 = off, 0-15 the MIDI channel, 16 = omni
@@ -705,6 +765,17 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     public int getKeyboardChannel ()
     {
         return this.keyboardChannel;
+    }
+
+
+    /**
+     * Should CC timbre directly routed to the DAW?
+     *
+     * @return True to route
+     */
+    public boolean isKeyboardRouteTimbre ()
+    {
+        return this.keyboardRouteTimbre;
     }
 
 
@@ -800,7 +871,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             props.put (slotName + TAG_NUMBER, Integer.toString (slot.getNumber ()));
             props.put (slotName + TAG_MIDI_CHANNEL, Integer.toString (slot.getMidiChannel ()));
             props.put (slotName + TAG_RESOLUTION, Boolean.toString (slot.getResolution ()));
-            props.put (slotName + TAG_KNOB_MODE, Integer.toString (slot.getKnobMode ()));
+            props.put (slotName + TAG_KNOB_MODE, Integer.toString (slot.getKnobMode ().ordinal ()));
             props.put (slotName + TAG_COMMAND, slot.getCommand ().getName ());
             props.put (slotName + TAG_SEND_VALUE, Boolean.toString (slot.isSendValue ()));
             props.put (slotName + TAG_SEND_VALUE_WHEN_RECEIVED, Boolean.toString (slot.isSendValueWhenReceived ()));
@@ -833,8 +904,13 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
                 final String slotName = "SLOT" + i + "_";
                 final CommandSlot slot = this.commandSlots[i];
 
+                final String typeProperty = props.getProperty (slotName + TAG_TYPE);
+                if (typeProperty == null)
+                    continue;
+
+                int type = Integer.parseInt (typeProperty);
+
                 final FlexiCommand command = FlexiCommand.lookupByName (props.getProperty (slotName + TAG_COMMAND));
-                int type = Integer.parseInt (props.getProperty (slotName + TAG_TYPE));
 
                 // For backwards compatibility
                 if (command == FlexiCommand.OFF)
@@ -848,7 +924,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
                 slot.setNumber (numberProperty == null ? 0 : Integer.parseInt (numberProperty));
                 slot.setMidiChannel (midiChannelProperty == null ? 0 : Integer.parseInt (midiChannelProperty));
                 slot.setResolution (Boolean.parseBoolean (props.getProperty (slotName + TAG_RESOLUTION)));
-                slot.setKnobMode (knobModeProperty == null ? 0 : Integer.parseInt (knobModeProperty));
+                slot.setKnobMode (readKnobMode (knobModeProperty));
                 slot.setCommand (command);
                 slot.setSendValue (Boolean.parseBoolean (props.getProperty (slotName + TAG_SEND_VALUE)));
                 slot.setSendValueWhenReceived (Boolean.parseBoolean (props.getProperty (slotName + TAG_SEND_VALUE_WHEN_RECEIVED)));
@@ -971,7 +1047,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
      */
     private void setMidiChannel (final int value)
     {
-        this.midiChannelSetting.set (OPTIONS_MIDI_CHANNEL[value]);
+        this.midiChannelSetting.set (CONTROLLER_CHANNELS.get (value));
     }
 
 
@@ -991,9 +1067,9 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
      *
      * @param value The index
      */
-    private void setKnobMode (final int value)
+    private void setKnobMode (final KnobMode value)
     {
-        this.knobModeSetting.set (OPTIONS_KNOBMODE[value]);
+        this.knobModeSetting.set (value.getLabel ());
     }
 
 
@@ -1053,5 +1129,23 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         }
         final String [] array = functionsNames.toArray (new String [functionsNames.size ()]);
         return settingsUI.getEnumSetting (functionCategory + ":", settingCategory, array, array[0]);
+    }
+
+
+    private static KnobMode readKnobMode (final String knobModeProperty)
+    {
+        if (knobModeProperty == null)
+            return KnobMode.ABSOLUTE;
+
+        try
+        {
+            final int knobModeID = Integer.parseInt (knobModeProperty);
+            final KnobMode [] knobModeValues = KnobMode.values ();
+            return knobModeID < knobModeValues.length ? knobModeValues[knobModeID] : KnobMode.ABSOLUTE;
+        }
+        catch (final NumberFormatException ex)
+        {
+            return KnobMode.ABSOLUTE;
+        }
     }
 }

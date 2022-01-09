@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ableton.push.command.trigger;
@@ -35,7 +35,6 @@ public class PageRightCommand extends AbstractTriggerCommand<PushControlSurface,
 
 
     /** {@inheritDoc} */
-    @SuppressWarnings("rawtypes")
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
@@ -48,7 +47,7 @@ public class PageRightCommand extends AbstractTriggerCommand<PushControlSurface,
         }
 
         final IView activeView = viewManager.getActive ();
-        if (activeView instanceof AbstractSequencerView)
-            ((AbstractSequencerView) activeView).onRight (event);
+        if (activeView instanceof final AbstractSequencerView<?, ?> sequencerView)
+            sequencerView.onRight (event);
     }
 }

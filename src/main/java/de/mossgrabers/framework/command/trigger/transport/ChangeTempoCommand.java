@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.command.trigger.transport;
@@ -21,8 +21,8 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class ChangeTempoCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private boolean isPlus;
-    private boolean isTempoChange;
+    private final boolean isPlus;
+    private boolean       isTempoChange;
 
 
     /**

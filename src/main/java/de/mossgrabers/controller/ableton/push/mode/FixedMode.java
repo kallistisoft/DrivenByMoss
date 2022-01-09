@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ableton.push.mode;
@@ -26,6 +26,9 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class FixedMode extends BaseMode<IItem>
 {
+    private final TemporaryNewCommand<?, ?> [] newCommands = new TemporaryNewCommand<?, ?> [8];
+
+
     /**
      * Constructor.
      *
@@ -35,6 +38,9 @@ public class FixedMode extends BaseMode<IItem>
     public FixedMode (final PushControlSurface surface, final IModel model)
     {
         super ("Fixed", surface, model);
+
+        for (int i = 0; i < 8; i++)
+            this.newCommands[i] = new TemporaryNewCommand<> (i, this.model, this.surface);
     }
 
 
@@ -55,7 +61,7 @@ public class FixedMode extends BaseMode<IItem>
     {
         if (event != ButtonEvent.UP)
             return;
-        new TemporaryNewCommand<> (index, this.model, this.surface).execute (ButtonEvent.DOWN, 127);
+        this.newCommands[index].execute ();
         this.surface.getModeManager ().restore ();
     }
 

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.bitwig.framework.daw;
@@ -24,8 +24,8 @@ import java.util.Map;
  */
 public class GrooveImpl implements IGroove
 {
-    private Groove                             groove;
-    private Map<GrooveParameterID, IParameter> parameters = new EnumMap<> (GrooveParameterID.class);
+    private final Groove                             groove;
+    private final Map<GrooveParameterID, IParameter> parameters = new EnumMap<> (GrooveParameterID.class);
 
 
     /**

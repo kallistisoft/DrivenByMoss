@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ableton.push.controller;
@@ -56,8 +56,8 @@ public class PushUsbDisplay
     private final IMemoryBlock             imageBlock;
     private final byte []                  byteStore        = new byte [DATA_SZ];
 
-    private Object                         sendLock         = new Object ();
-    private Object                         bufferUpdateLock = new Object ();
+    private final Object                   sendLock         = new Object ();
+    private final Object                   bufferUpdateLock = new Object ();
     private final ScheduledExecutorService sendExecutor     = Executors.newSingleThreadScheduledExecutor ();
 
 
@@ -175,14 +175,26 @@ public class PushUsbDisplay
             this.sendExecutor.shutdown ();
             try
             {
-                this.sendExecutor.awaitTermination (5, TimeUnit.SECONDS);
+                if (!this.sendExecutor.awaitTermination (5, TimeUnit.SECONDS))
+                    this.host.error ("USB Send executor did not end in 5 seconds.");
             }
             catch (final InterruptedException ex)
             {
-                this.host.error ("USB Send executor did not end in 10 seconds. Interrupted.", ex);
+                this.host.error ("USB Send executor interrupted.", ex);
                 Thread.currentThread ().interrupt ();
             }
         }
+    }
+
+
+    /**
+     * Check if the send executor is shutdown.
+     *
+     * @return True if shutdown
+     */
+    public boolean isShutdown ()
+    {
+        return this.sendExecutor.isShutdown ();
     }
 
 

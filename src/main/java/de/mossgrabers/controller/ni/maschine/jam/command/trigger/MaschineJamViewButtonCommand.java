@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ni.maschine.jam.command.trigger;
@@ -62,6 +62,6 @@ public class MaschineJamViewButtonCommand extends ViewButtonCommand<MaschineJamC
     public boolean canScroll ()
     {
         final IView view = this.viewManager.getActive ();
-        return view instanceof IViewNavigation && ((IViewNavigation) view).canScroll (this.direction);
+        return view instanceof final IViewNavigation viewNavigation && viewNavigation.canScroll (this.direction);
     }
 }

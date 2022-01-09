@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw.data;
@@ -16,7 +16,7 @@ public interface IDeviceMetadata
      *
      * @return The name
      */
-    String getName ();
+    String name ();
 
 
     /**
@@ -24,5 +24,5 @@ public interface IDeviceMetadata
      *
      * @return The full name
      */
-    String getFullName ();
+    String fullName ();
 }

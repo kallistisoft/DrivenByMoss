@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.novation.launchpad.command.continuous;
@@ -19,7 +19,7 @@ import de.mossgrabers.framework.featuregroup.IView;
  */
 public class FaderCommand extends AbstractContinuousCommand<LaunchpadControlSurface, LaunchpadConfiguration>
 {
-    private int index;
+    private final int index;
 
 
     /**
@@ -41,7 +41,7 @@ public class FaderCommand extends AbstractContinuousCommand<LaunchpadControlSurf
     public void execute (final int value)
     {
         final IView view = this.surface.getViewManager ().getActive ();
-        if (view instanceof AbstractFaderView)
-            ((AbstractFaderView) view).onValueKnob (this.index, value);
+        if (view instanceof final AbstractFaderView faderView)
+            faderView.onValueKnob (this.index, value);
     }
 }

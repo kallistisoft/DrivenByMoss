@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.akai.apc.command.trigger;
@@ -24,7 +24,7 @@ import java.util.Optional;
  */
 public class SendModeCommand extends AbstractTriggerCommand<APCControlSurface, APCConfiguration>
 {
-    private int sendIndex;
+    private final int sendIndex;
 
 
     /**
@@ -59,11 +59,8 @@ public class SendModeCommand extends AbstractTriggerCommand<APCControlSurface, A
 
     private void handleExecute (final ButtonEvent event, final int index)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-
         // No Sends on FX tracks
-        if (this.model.isEffectTrackBankActive ())
+        if (event != ButtonEvent.DOWN || this.model.isEffectTrackBankActive ())
             return;
 
         final ModeManager modeManager = this.surface.getModeManager ();

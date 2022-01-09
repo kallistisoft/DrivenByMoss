@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.novation.sl.controller;
@@ -117,7 +117,7 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
     private static final String SYSEX_AUTOMAP_ON           = SYSEX_HEADER + "01 01 F7";
     private static final String SYSEX_AUTOMAP_OFF          = SYSEX_HEADER + "01 00 F7";
 
-    private boolean             isMkII;
+    private final boolean       isMkII;
     private boolean             isTransportActive;
     private int                 lastCC94Value;
     private boolean             isDAWConnected             = false;

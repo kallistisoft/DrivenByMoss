@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.osc;
@@ -59,7 +59,7 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
     private int                    sendPort                  = 9000;
     private ValueResolution        valueResolution           = ValueResolution.LOW;
     private int                    bankPageSize              = 8;
-    private String []              assignableFunctionActions = new String [8];
+    private final String []        assignableFunctionActions = new String [8];
 
 
     /**

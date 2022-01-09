@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.bitwig.framework.daw.data;
@@ -45,6 +45,9 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
 
     private int                                 vuLeft;
     private int                                 vuRight;
+    private int                                 vuPeakLeft;
+    private int                                 vuPeakRight;
+    private int                                 vuPeakLastVolume;
 
 
     /**
@@ -80,6 +83,7 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
         channel.isActivated ().markInterested ();
         channel.mute ().markInterested ();
         channel.solo ().markInterested ();
+        channel.isMutedBySolo ().markInterested ();
         channel.color ().markInterested ();
 
         this.volumeParameter = new ParameterImpl (valueChanger, channel.volume (), index);
@@ -109,6 +113,7 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
         Util.setIsSubscribed (this.deviceChain.isActivated (), enable);
         Util.setIsSubscribed (this.deviceChain.mute (), enable);
         Util.setIsSubscribed (this.deviceChain.solo (), enable);
+        Util.setIsSubscribed (this.deviceChain.isMutedBySolo (), enable);
         Util.setIsSubscribed (this.deviceChain.color (), enable);
 
         this.volumeParameter.enableObservers (enable);
@@ -368,6 +373,14 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
 
     /** {@inheritDoc} */
     @Override
+    public boolean isMutedBySolo ()
+    {
+        return this.deviceChain.isMutedBySolo ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public ColorEx getColor ()
     {
         final SettableColorValue color = this.deviceChain.color ();
@@ -404,6 +417,46 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
     public int getVuRight ()
     {
         return this.vuRight * this.valueChanger.getUpperBound () / MAX_RESOLUTION;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getVuPeakLeft ()
+    {
+        this.checkPeakVolume ();
+
+        final int vuLeftAdjusted = this.getVuLeft ();
+        if (vuLeftAdjusted > this.vuPeakLeft)
+            this.vuPeakLeft = vuLeftAdjusted;
+        return this.vuPeakLeft;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getVuPeakRight ()
+    {
+        this.checkPeakVolume ();
+
+        final int vuRightAdjusted = this.getVuRight ();
+        if (vuRightAdjusted > this.vuPeakRight)
+            this.vuPeakRight = vuRightAdjusted;
+        return this.vuPeakRight;
+    }
+
+
+    /**
+     * If the volume has changed, reset the maximum peak value.
+     */
+    protected void checkPeakVolume ()
+    {
+        final int volume = this.volumeParameter.getValue ();
+        if (this.vuPeakLastVolume == volume)
+            return;
+        this.vuPeakLastVolume = volume;
+        this.vuPeakLeft = 0;
+        this.vuPeakRight = 0;
     }
 
 
@@ -470,16 +523,16 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
         try
         {
             final DeviceMetadataImpl dm = (DeviceMetadataImpl) metadata;
-            switch (dm.getPluginType ())
+            switch (dm.pluginType ())
             {
                 case BITWIG:
-                    insertionPoint.insertBitwigDevice (UUID.fromString (dm.getId ()));
+                    insertionPoint.insertBitwigDevice (UUID.fromString (dm.id ()));
                     break;
                 case VST2:
-                    insertionPoint.insertVST2Device (Integer.parseInt (dm.getId ()));
+                    insertionPoint.insertVST2Device (Integer.parseInt (dm.id ()));
                     break;
                 case VST3:
-                    insertionPoint.insertVST3Device (dm.getId ());
+                    insertionPoint.insertVST3Device (dm.id ());
                     break;
             }
         }

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.novation.launchpad.view;
@@ -99,9 +99,7 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
     @Override
     public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
-        if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN)
-            return;
-        if (!this.model.canSelectedTrackHoldNotes ())
+        if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN || !this.model.canSelectedTrackHoldNotes ())
             return;
 
         final ITextDisplay display = this.surface.getTextDisplay ();

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.command.trigger;
@@ -40,10 +40,7 @@ public abstract class AbstractDoubleTriggerCommand<S extends IControlSurface<C>,
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event != ButtonEvent.UP)
-            return;
-
-        if (this.handleButtonCombinations ())
+        if (event != ButtonEvent.UP || this.handleButtonCombinations ())
             return;
 
         if (this.restartFlag)

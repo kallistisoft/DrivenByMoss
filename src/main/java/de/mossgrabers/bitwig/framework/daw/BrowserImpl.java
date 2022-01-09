@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.bitwig.framework.daw;
@@ -68,6 +68,7 @@ public class BrowserImpl extends AbstractBrowser
         this.browser.selectedContentTypeName ().markInterested ();
         this.browser.contentTypeNames ().markInterested ();
         this.browser.title().markInterested ();
+        this.browser.shouldAudition ().markInterested ();
 
         this.filterColumns = new BrowserFilterColumn []
         {
@@ -100,6 +101,7 @@ public class BrowserImpl extends AbstractBrowser
         Util.setIsSubscribed (this.browser.selectedContentTypeName (), enable);
         Util.setIsSubscribed (this.browser.contentTypeNames (), enable);
         Util.setIsSubscribed (this.browser.title (), enable);
+        Util.setIsSubscribed (this.browser.shouldAudition (), enable);
 
         for (final IBrowserColumn column: this.columnData)
             column.enableObservers (enable);
@@ -169,15 +171,39 @@ public class BrowserImpl extends AbstractBrowser
 
     /** {@inheritDoc} */
     @Override
+    public boolean isPreviewEnabled ()
+    {
+        return this.browser.shouldAudition ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void togglePreviewEnabled ()
+    {
+        this.browser.shouldAudition ().toggle ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void setPreviewEnabled (final boolean isEnabled)
+    {
+        this.browser.shouldAudition ().set (isEnabled);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void replace (final IItem item)
     {
         final InsertionPoint insertionPoint;
-        if (item instanceof CursorDeviceImpl)
-            insertionPoint = ((CursorDeviceImpl) item).getCursorDevice ().replaceDeviceInsertionPoint ();
-        else if (item instanceof SlotImpl)
-            insertionPoint = ((SlotImpl) item).getSlot ().replaceInsertionPoint ();
-        else if (item instanceof DrumPadImpl)
-            insertionPoint = ((DrumPadImpl) item).getDrumPad ().insertionPoint ();
+        if (item instanceof final CursorDeviceImpl cursorDeviceImpl)
+            insertionPoint = cursorDeviceImpl.getCursorDevice ().replaceDeviceInsertionPoint ();
+        else if (item instanceof final SlotImpl slot)
+            insertionPoint = slot.getSlot ().replaceInsertionPoint ();
+        else if (item instanceof final DrumPadImpl drumPad)
+            insertionPoint = drumPad.getDrumPad ().insertionPoint ();
         else
             return;
 

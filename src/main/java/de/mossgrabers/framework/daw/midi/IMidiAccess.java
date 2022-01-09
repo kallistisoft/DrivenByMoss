@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw.midi;
@@ -32,7 +32,7 @@ public interface IMidiAccess
      * Create a MIDI input. Uses the first input.
      *
      * @param name The name to use for the input
-     * @param filters The filters to regiser for
+     * @param filters The filters to register for
      * @return The created input
      */
     IMidiInput createInput (String name, String... filters);

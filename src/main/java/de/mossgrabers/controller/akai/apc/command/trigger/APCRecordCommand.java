@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.akai.apc.command.trigger;
@@ -36,7 +36,7 @@ public class APCRecordCommand extends NewCommand<APCControlSurface, APCConfigura
     public void executeNormal (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.model.getTransport ().record ();
+            this.model.getTransport ().startRecording ();
     }
 
 

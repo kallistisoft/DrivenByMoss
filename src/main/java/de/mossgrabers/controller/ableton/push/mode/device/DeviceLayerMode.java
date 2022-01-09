@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ableton.push.mode.device;
@@ -444,7 +444,7 @@ public class DeviceLayerMode extends BaseMode<ILayer>
                 final boolean enableVUMeters = config.isEnableVUMeters ();
                 final int vuR = valueChanger.toDisplayValue (enableVUMeters ? layer.getVuRight () : 0);
                 final int vuL = valueChanger.toDisplayValue (enableVUMeters ? layer.getVuLeft () : 0);
-                display.addChannelElement (topMenu, isTopMenuOn, bottomMenu, ChannelType.LAYER, bottomMenuColor, isBottomMenuOn, valueChanger.toDisplayValue (layer.getVolume ()), valueChanger.toDisplayValue (layer.getModulatedVolume ()), this.isKnobTouched[0] ? layer.getVolumeStr (8) : "", valueChanger.toDisplayValue (layer.getPan ()), valueChanger.toDisplayValue (layer.getModulatedPan ()), this.isKnobTouched[1] ? layer.getPanStr (8) : "", vuL, vuR, layer.isMute (), layer.isSolo (), false, layer.isActivated (), 0);
+                display.addChannelElement (topMenu, isTopMenuOn, bottomMenu, ChannelType.LAYER, bottomMenuColor, isBottomMenuOn, valueChanger.toDisplayValue (layer.getVolume ()), valueChanger.toDisplayValue (layer.getModulatedVolume ()), this.isKnobTouched[0] ? layer.getVolumeStr (8) : "", valueChanger.toDisplayValue (layer.getPan ()), valueChanger.toDisplayValue (layer.getModulatedPan ()), this.isKnobTouched[1] ? layer.getPanStr (8) : "", vuL, vuR, layer.isMute (), layer.isSolo (), false, layer.isActivated (), 0, false);
             }
             else if (sendsIndex == i && l.isPresent ())
             {
@@ -484,7 +484,7 @@ public class DeviceLayerMode extends BaseMode<ILayer>
             final boolean enableVUMeters = this.configuration.isEnableVUMeters ();
             final int vuR = valueChanger.toDisplayValue (enableVUMeters ? layer.getVuRight () : 0);
             final int vuL = valueChanger.toDisplayValue (enableVUMeters ? layer.getVuLeft () : 0);
-            display.addChannelElement (selectedMenu, topMenu, isTopMenuOn, layer.doesExist () ? layer.getName () : "", ChannelType.LAYER, layer.getColor (), layer.isSelected (), valueChanger.toDisplayValue (layer.getVolume ()), valueChanger.toDisplayValue (layer.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? layer.getVolumeStr (8) : "", valueChanger.toDisplayValue (layer.getPan ()), valueChanger.toDisplayValue (layer.getModulatedPan ()), isPan && this.isKnobTouched[i] ? layer.getPanStr () : "", vuL, vuR, layer.isMute (), layer.isSolo (), false, layer.isActivated (), 0);
+            display.addChannelElement (selectedMenu, topMenu, isTopMenuOn, layer.doesExist () ? layer.getName () : "", ChannelType.LAYER, layer.getColor (), layer.isSelected (), valueChanger.toDisplayValue (layer.getVolume ()), valueChanger.toDisplayValue (layer.getModulatedVolume ()), isVolume && this.isKnobTouched[i] ? layer.getVolumeStr (8) : "", valueChanger.toDisplayValue (layer.getPan ()), valueChanger.toDisplayValue (layer.getModulatedPan ()), isPan && this.isKnobTouched[i] ? layer.getPanStr () : "", vuL, vuR, layer.isMute (), layer.isSolo (), false, layer.isActivated (), 0, false);
         }
     }
 

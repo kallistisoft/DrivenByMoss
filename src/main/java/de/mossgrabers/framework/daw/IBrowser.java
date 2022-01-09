@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw;
@@ -100,6 +100,28 @@ public interface IBrowser extends IObserverManagement
      * @return The names
      */
     String [] getContentTypeNames ();
+
+
+    /**
+     * Is browser preview enabled?
+     *
+     * @return True, if enabled
+     */
+    boolean isPreviewEnabled ();
+
+
+    /**
+     * Toggle browser preview on/off.
+     */
+    void togglePreviewEnabled ();
+
+
+    /**
+     * Set browser preview on/off.
+     *
+     * @param isEnabled True to enable
+     */
+    void setPreviewEnabled (boolean isEnabled);
 
 
     /**

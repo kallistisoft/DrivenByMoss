@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.osc.module;
@@ -115,7 +115,7 @@ public class TransportModule extends AbstractModule
                 break;
 
             case "record":
-                this.transport.record ();
+                this.transport.startRecording ();
                 break;
 
             case "overdub":

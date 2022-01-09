@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ni.kontrol.mkii;
@@ -36,7 +36,7 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
-import de.mossgrabers.framework.controller.valuechanger.DefaultValueChanger;
+import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
@@ -90,7 +90,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
 
         this.version = version;
         this.colorManager = new KontrolProtocolColorManager ();
-        this.valueChanger = new DefaultValueChanger (1024, 4);
+        this.valueChanger = new TwosComplementValueChanger (1024, 4);
         this.configuration = new KontrolProtocolConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
@@ -180,7 +180,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         ms.setNumDeviceLayers (0);
         ms.setNumDrumPadLayers (0);
         ms.setNumMarkers (0);
-        this.model = this.factory.createModel (this.colorManager, this.valueChanger, this.scales, ms);
+        this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
     }
 
 
@@ -239,10 +239,10 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         this.addButton (ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface, false), 15, KontrolProtocolControlSurface.KONTROL_METRO, t::isMetronomeOn);
         this.addButton (ButtonID.TAP_TEMPO, "Tempo", new TapTempoCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_TAP_TEMPO);
 
-        // Note: Since there is no pressed-state with this device, in the sim-GUI the following
-        // buttons are always on
-        this.addButton (ButtonID.UNDO, "Undo", new UndoCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_UNDO, () -> true);
-        this.addButton (ButtonID.REDO, "Redo", new RedoCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_REDO, () -> true);
+        // Note: Since there is no pressed-state with this device, in the simulator-GUI the
+        // following buttons are always on
+        this.addButton (ButtonID.UNDO, "Undo", new UndoCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_UNDO, () -> this.model.getApplication ().canUndo ());
+        this.addButton (ButtonID.REDO, "Redo", new RedoCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_REDO, () -> this.model.getApplication ().canRedo ());
         this.addButton (ButtonID.QUANTIZE, "Quantize", new QuantizeCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_QUANTIZE, () -> true);
         this.addButton (ButtonID.AUTOMATION, "Automation", new WriteArrangerAutomationCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_AUTOMATION, t::isWritingArrangerAutomation);
 
@@ -268,7 +268,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
 
         this.addButtons (surface, 0, 8, ButtonID.ROW_SELECT_1, "Select", (event, index) -> {
             if (event == ButtonEvent.DOWN)
-                this.model.getCurrentTrackBank ().getItem (index).select ();
+                this.model.getCurrentTrackBank ().getItem (index).selectOrExpandGroup ();
         }, 15, KontrolProtocolControlSurface.KONTROL_TRACK_SELECTED, index -> this.model.getTrackBank ().getItem (index).isSelected () ? 1 : 0);
 
         this.addButtons (surface, 0, 8, ButtonID.ROW1_1, "Mute", (event, index) -> {

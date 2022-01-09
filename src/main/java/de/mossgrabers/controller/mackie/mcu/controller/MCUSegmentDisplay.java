@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.mackie.mcu.controller;
@@ -16,7 +16,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
  */
 public class MCUSegmentDisplay extends AbstractTextDisplay
 {
-    private int [] transportBuffer = new int [10];
+    private final int [] transportBuffer = new int [10];
 
 
     /**

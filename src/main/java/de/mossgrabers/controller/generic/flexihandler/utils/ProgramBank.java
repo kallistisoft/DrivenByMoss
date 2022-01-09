@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.generic.flexihandler.utils;
@@ -20,14 +20,14 @@ import java.util.regex.Pattern;
  */
 public class ProgramBank
 {
-    private static final Pattern BANK_PATTERN  = Pattern.compile ("\\$BANK=(.+)\\$MSB=(\\d+)\\$LSB=(\\d+)\\$CHANNEL=(\\d+)", Pattern.UNICODE_CASE);
+    private static final Pattern       BANK_PATTERN  = Pattern.compile ("\\$BANK=(.+)\\$MSB=(\\d+)\\$LSB=(\\d+)\\$CHANNEL=(\\d+)", Pattern.UNICODE_CASE);
 
-    private String               name;
-    private int                  msb;
-    private int                  lsb;
-    private int                  channel;
-    private String []            programs;
-    private Map<String, Integer> programMapper = new HashMap<> (128);
+    private String                     name;
+    private int                        msb;
+    private int                        lsb;
+    private int                        channel;
+    private String []                  programs;
+    private final Map<String, Integer> programMapper = new HashMap<> (128);
 
 
     /**

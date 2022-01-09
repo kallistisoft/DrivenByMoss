@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ni.maschine.mk3.mode;
@@ -10,6 +10,8 @@ import de.mossgrabers.controller.ni.maschine.mk3.view.PlayView;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.mode.INoteMode;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.ScaleLayout;
 import de.mossgrabers.framework.scale.Scales;
@@ -88,6 +90,7 @@ public class PlayConfigurationMode extends BaseMode
                     playView.onOctaveUp (ButtonEvent.DOWN);
                 else
                     playView.onOctaveDown (ButtonEvent.DOWN);
+                ((INoteMode) this.surface.getModeManager ().get (Modes.NOTE)).clearNotes ();
                 break;
 
             default:

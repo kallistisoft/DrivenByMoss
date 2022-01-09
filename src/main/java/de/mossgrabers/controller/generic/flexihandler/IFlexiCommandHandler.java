@@ -1,10 +1,11 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.generic.flexihandler;
 
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
+import de.mossgrabers.controller.generic.flexihandler.utils.KnobMode;
 import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
 
 
@@ -39,5 +40,5 @@ public interface IFlexiCommandHandler
      * @param knobMode If a knob is mapped this is the type of the knob (relative, absolute, ...)
      * @param value The knob or button value
      */
-    void handle (FlexiCommand command, int knobMode, MidiValue value);
+    void handle (FlexiCommand command, KnobMode knobMode, MidiValue value);
 }

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.novation.launchkey.maxi.mode;
@@ -14,7 +14,7 @@ import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.mode.track.VolumeMode;
+import de.mossgrabers.framework.mode.track.TrackVolumeMode;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ import java.util.List;
  *
  * @author J&uuml;rgen Mo&szlig;graber
  */
-public class LaunchkeyMk3VolumeMode extends VolumeMode<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
+public class LaunchkeyMk3VolumeMode extends TrackVolumeMode<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
 {
     private final boolean areKnobs;
 

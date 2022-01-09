@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.novation.launchpad.view;
@@ -274,10 +274,7 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
     @Override
     protected boolean isButtonCombination (final ButtonID buttonID)
     {
-        if (super.isButtonCombination (buttonID))
-            return true;
-
-        if (buttonID == ButtonID.DELETE && this.configuration.isDeleteModeActive ())
+        if (super.isButtonCombination (buttonID) || buttonID == ButtonID.DELETE && this.configuration.isDeleteModeActive ())
             return true;
 
         return buttonID == ButtonID.DUPLICATE && this.configuration.isDuplicateModeActive ();
@@ -328,8 +325,8 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
             track.toggleRecArm ();
         else if (modeManager.isActive (Modes.TRACK_SELECT))
         {
-            track.select ();
-            this.surface.getDisplay ().notify (track.getPosition () + 1 + ": " + track.getName ());
+            track.selectOrExpandGroup ();
+            this.mvHelper.notifySelectedTrack ();
         }
         else if (modeManager.isActive (Modes.MUTE))
             track.toggleMute ();

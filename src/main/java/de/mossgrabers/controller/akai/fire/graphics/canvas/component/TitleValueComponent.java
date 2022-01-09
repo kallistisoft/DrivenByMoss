@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.akai.fire.graphics.canvas.component;
@@ -127,9 +127,7 @@ public class TitleValueComponent extends AbstractBaseComponent
     {
         if (this == obj)
             return true;
-        if (!super.equals (obj))
-            return false;
-        if (this.getClass () != obj.getClass ())
+        if (!super.equals (obj) || this.getClass () != obj.getClass ())
             return false;
         final TitleValueComponent other = (TitleValueComponent) obj;
         if (this.isPan != other.isPan)
@@ -141,9 +139,7 @@ public class TitleValueComponent extends AbstractBaseComponent
         }
         else if (!this.label2.equals (other.label2))
             return false;
-        if (this.value != other.value)
-            return false;
-        if (this.vuLeft != other.vuLeft)
+        if (this.value != other.value || this.vuLeft != other.vuLeft)
             return false;
         return this.vuRight == other.vuRight;
     }

@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2021
+// (c) 2017-2022
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.command.trigger;
@@ -41,16 +41,21 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
     private final TapTempoCommand<S, C> tapTempoCommand;
     private final PlayCommand<S, C>     playCommand;
 
+    protected final int                 index;
+
 
     /**
      * Constructor.
      *
      * @param model The model
      * @param surface The surface
+     * @param index The index of the footswitch
      */
-    public FootswitchCommand (final IModel model, final S surface)
+    public FootswitchCommand (final IModel model, final S surface, final int index)
     {
         super (model, surface);
+
+        this.index = index;
 
         this.newCommand = new NewCommand<> (model, surface);
         this.recordCommand = new RecordCommand<> (model, surface);
@@ -64,10 +69,7 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        if (this.handleViewCommand (event))
-            return;
-
-        if (event != ButtonEvent.DOWN)
+        if (this.handleViewCommand (event) || event != ButtonEvent.DOWN)
             return;
 
         switch (this.getSetting ())
@@ -124,7 +126,7 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
      */
     protected int getSetting ()
     {
-        return this.surface.getConfiguration ().getFootswitch2 ();
+        return this.surface.getConfiguration ().getFootswitch (this.index);
     }
 
 
@@ -176,6 +178,9 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
      */
     private void handleLooper (final ButtonEvent event)
     {
+        if (event == ButtonEvent.LONG)
+            return;
+
         final ITrack cursorTrack = this.model.getCursorTrack ();
         if (!cursorTrack.doesExist ())
         {
@@ -186,28 +191,18 @@ public class FootswitchCommand<S extends IControlSurface<C>, C extends Configura
         final ISlotBank slotBank = cursorTrack.getSlotBank ();
         final Optional<ISlot> selectedSlot = slotBank.getSelectedItem ();
         final ISlot slot = selectedSlot.isEmpty () ? slotBank.getItem (0) : selectedSlot.get ();
-        if (event == ButtonEvent.DOWN)
+
+        final boolean isDown = event == ButtonEvent.DOWN;
+        if (isDown && !slot.hasContent ())
         {
-            if (slot.hasContent ())
-            {
-                // If there is a clip in the selected slot, enable (not toggle)
-                // LauncherOverdub.
-                this.model.getTransport ().setLauncherOverdub (true);
-            }
-            else
-            {
-                // If there is no clip in the selected slot, create a clip and begin record
-                // mode. Releasing it ends record mode.
-                this.newCommand.execute (event, 127);
-                slot.select ();
-                this.model.getTransport ().setLauncherOverdub (true);
-            }
+            // If there is no clip in the selected slot, create a clip and begin record
+            // mode. Releasing it ends record mode.
+            this.newCommand.execute ();
+            slot.select ();
         }
-        else
-        {
-            // Releasing it would turn off LauncherOverdub.
-            this.model.getTransport ().setLauncherOverdub (false);
-        }
+
+        this.model.getTransport ().setLauncherOverdub (isDown);
+
         // Start transport if not already playing
         slot.launch ();
     }
