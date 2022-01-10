@@ -323,11 +323,12 @@ public interface Configuration
 
 
     /**
-     * Get the functionality of the foot-switch 2.
+     * Get the functionality of a footswitch.
      *
-     * @return The functionality of the foot-switch 2.
+     * @param index The index of the footswitch
+     * @return The functionality of the footswitch.
      */
-    int getFootswitch2 ();
+    int getFootswitch (int index);
 
 
     /**
@@ -359,7 +360,7 @@ public interface Configuration
     /**
      * Lookup the index of the given arpeggiator mode among the available ones.
      *
-     * @param arpMode The arp mode to look up
+     * @param arpMode The arpeggiator mode to look up
      * @return The index
      */
     int lookupArpeggiatorModeIndex (ArpeggiatorMode arpMode);
@@ -496,11 +497,12 @@ public interface Configuration
      * @return The function index
      */
     RecordFunction getShiftedRecordButtonFunction ();
-
+    
+    
     /**
      * Get the auto browser view setting.
      *
      * @return True if auto browser view is enabled
      */
-    boolean isAutoBrowserViewActive ();
+    boolean isAutoBrowserViewActive ();    
 }

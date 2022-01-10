@@ -76,46 +76,44 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer      TURN_OFF_EMPTY_DRUM_PADS          = Integer.valueOf (16);
     /** Setting for action for rec armed pad. */
     public static final Integer      ACTION_FOR_REC_ARMED_PAD          = Integer.valueOf (17);
-    /** Setting for the footswitch functionality. */
-    public static final Integer      FOOTSWITCH_2                      = Integer.valueOf (18);
     /** Setting for displaying browser column 1. */
-    public static final Integer      BROWSER_DISPLAY_FILTER1           = Integer.valueOf (19);
+    public static final Integer      BROWSER_DISPLAY_FILTER1           = Integer.valueOf (18);
     /** Setting for displaying browser column 2. */
-    public static final Integer      BROWSER_DISPLAY_FILTER2           = Integer.valueOf (20);
+    public static final Integer      BROWSER_DISPLAY_FILTER2           = Integer.valueOf (19);
     /** Setting for displaying browser column 3. */
-    public static final Integer      BROWSER_DISPLAY_FILTER3           = Integer.valueOf (21);
+    public static final Integer      BROWSER_DISPLAY_FILTER3           = Integer.valueOf (20);
     /** Setting for displaying browser column 4. */
-    public static final Integer      BROWSER_DISPLAY_FILTER4           = Integer.valueOf (22);
+    public static final Integer      BROWSER_DISPLAY_FILTER4           = Integer.valueOf (21);
     /** Setting for displaying browser column 5. */
-    public static final Integer      BROWSER_DISPLAY_FILTER5           = Integer.valueOf (23);
+    public static final Integer      BROWSER_DISPLAY_FILTER5           = Integer.valueOf (22);
     /** Setting for displaying browser column 6. */
-    public static final Integer      BROWSER_DISPLAY_FILTER6           = Integer.valueOf (24);
+    public static final Integer      BROWSER_DISPLAY_FILTER6           = Integer.valueOf (23);
     /** Setting for displaying browser column 7. */
-    public static final Integer      BROWSER_DISPLAY_FILTER7           = Integer.valueOf (25);
+    public static final Integer      BROWSER_DISPLAY_FILTER7           = Integer.valueOf (24);
     /** Setting for displaying browser column 8. */
-    public static final Integer      BROWSER_DISPLAY_FILTER8           = Integer.valueOf (26);
+    public static final Integer      BROWSER_DISPLAY_FILTER8           = Integer.valueOf (25);
     /** The speed of a knob. */
-    public static final Integer      KNOB_SENSITIVITY_DEFAULT          = Integer.valueOf (27);
+    public static final Integer      KNOB_SENSITIVITY_DEFAULT          = Integer.valueOf (26);
     /** The speed of a knob in slow mode. */
-    public static final Integer      KNOB_SENSITIVITY_SLOW             = Integer.valueOf (28);
+    public static final Integer      KNOB_SENSITIVITY_SLOW             = Integer.valueOf (27);
     /** Turn noterepeat on/off. */
-    public static final Integer      NOTEREPEAT_ACTIVE                 = Integer.valueOf (29);
+    public static final Integer      NOTEREPEAT_ACTIVE                 = Integer.valueOf (28);
     /** The note repeat period. */
-    public static final Integer      NOTEREPEAT_PERIOD                 = Integer.valueOf (30);
+    public static final Integer      NOTEREPEAT_PERIOD                 = Integer.valueOf (29);
     /** The note repeat length. */
-    public static final Integer      NOTEREPEAT_LENGTH                 = Integer.valueOf (31);
+    public static final Integer      NOTEREPEAT_LENGTH                 = Integer.valueOf (30);
     /** The note repeat mode. */
-    public static final Integer      NOTEREPEAT_MODE                   = Integer.valueOf (32);
+    public static final Integer      NOTEREPEAT_MODE                   = Integer.valueOf (31);
     /** The note repeat octave. */
-    public static final Integer      NOTEREPEAT_OCTAVE                 = Integer.valueOf (33);
+    public static final Integer      NOTEREPEAT_OCTAVE                 = Integer.valueOf (32);
     /** The MIDI channel to use for editing sequencer notes. */
-    public static final Integer      MIDI_EDIT_CHANNEL                 = Integer.valueOf (34);
+    public static final Integer      MIDI_EDIT_CHANNEL                 = Integer.valueOf (33);
     /** Setting for excluding deactivated tracks. */
-    public static final Integer      EXCLUDE_DEACTIVATED_ITEMS         = Integer.valueOf (35);
+    public static final Integer      EXCLUDE_DEACTIVATED_ITEMS         = Integer.valueOf (34);
     /** Setting for different record button functions. */
-    public static final Integer      RECORD_BUTTON_FUNCTION            = Integer.valueOf (36);
+    public static final Integer      RECORD_BUTTON_FUNCTION            = Integer.valueOf (35);
     /** Setting for different record button functions in combination with shift. */
-    public static final Integer      SHIFTED_RECORD_BUTTON_FUNCTION    = Integer.valueOf (37);
+    public static final Integer      SHIFTED_RECORD_BUTTON_FUNCTION    = Integer.valueOf (36);
     /** Show tracks hierarchical (instead of flat) if enabled. */
     public static final Integer      HIERARCHICAL_TRACKS               = Integer.valueOf (37);
     /** Setting for the footswitch functionality. */
@@ -126,8 +124,7 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer      FOOTSWITCH_3                      = Integer.valueOf (40);
     /** Setting for the footswitch functionality. */
     public static final Integer      FOOTSWITCH_4                      = Integer.valueOf (41);
-
-    /** Setting for auto-browser interface setting. */
+    /** Setting for browser interface setting. */
     public static final Integer      ACTIVATE_AUTO_BROWSER_VIEW        = Integer.valueOf (42);
 
     // Implementation IDs start at 50
@@ -336,6 +333,8 @@ public abstract class AbstractConfiguration implements Configuration
         "Toggle rec arm",
     };
 
+    private static final int                          NUMBER_OF_FOOTSWITCHES      = 4;
+
     protected final IHost                             host;
 
     private IEnumSetting                              scaleBaseSetting;
@@ -345,7 +344,6 @@ public abstract class AbstractConfiguration implements Configuration
     private IEnumSetting                              enableVUMetersSetting;
     private IEnumSetting                              flipSessionSetting;
     private IEnumSetting                              accentActiveSetting;
-    private IEnumSetting                              browserAutoViewSetting;
     private IIntegerSetting                           accentValueSetting;
     private IIntegerSetting                           quantizeAmountSetting;
     private IEnumSetting                              newClipLengthSetting;
@@ -354,8 +352,9 @@ public abstract class AbstractConfiguration implements Configuration
     private IEnumSetting                              noteRepeatLengthSetting;
     private IEnumSetting                              noteRepeatModeSetting;
     private IEnumSetting                              noteRepeatOctaveSetting;
-    private IEnumSetting                              midiEditChannelSetting;
     private IEnumSetting                              browserAutoViewSetting;
+    private IEnumSetting                              midiEditChannelSetting;
+    
     private final List<IEnumSetting>                  instrumentSettings          = new ArrayList<> (7);
     private final List<IEnumSetting>                  audioSettings               = new ArrayList<> (3);
     private final List<IEnumSetting>                  effectSettings              = new ArrayList<> (3);
@@ -375,7 +374,7 @@ public abstract class AbstractConfiguration implements Configuration
     private boolean                                   enableVUMeters              = false;
     private BehaviorOnStop                            behaviorOnStop              = BehaviorOnStop.MOVE_PLAY_CURSOR;
     protected boolean                                 flipSession                 = false;
-    private boolean                                   selectClipOnLaunch          = true;
+    protected boolean                                 selectClipOnLaunch          = true;
     private boolean                                   drawRecordStripe            = true;
     private int                                       convertAftertouch           = 0;
     /** Accent button active. */
@@ -388,8 +387,8 @@ public abstract class AbstractConfiguration implements Configuration
     private boolean                                   autoSelectDrum              = false;
     private boolean                                   turnOffEmptyDrumPads        = false;
     private int                                       actionForRecArmedPad        = 0;
-    private int                                       footswitch2                 = FOOTSWITCH_2_NEW_BUTTON;
-    private boolean []                                browserDisplayFilter        =
+    private final int []                              footswitch                  = new int [NUMBER_OF_FOOTSWITCHES];
+    private final boolean []                          browserDisplayFilter        =
     {
         true,
         true,
@@ -419,11 +418,12 @@ public abstract class AbstractConfiguration implements Configuration
 
     private boolean                                   isDeleteActive              = false;
     private boolean                                   isDuplicateActive           = false;
+
+    private boolean                                   browserAutoView             = true;
     
     private RecordFunction                            recordButtonFunction        = RecordFunction.RECORD_ARRANGER;
     private RecordFunction                            shiftedRecordButtonFunction = RecordFunction.NEW_CLIP;
-    
-    private boolean                                   browserAutoView               = true;
+
 
     /**
      * Constructor.
@@ -441,6 +441,9 @@ public abstract class AbstractConfiguration implements Configuration
 
         for (int i = 0; i < this.userPageNames.length; i++)
             this.userPageNames[i] = "Page " + (i + 1);
+
+        for (int i = 0; i < this.footswitch.length; i++)
+            this.footswitch[i] = FOOTSWITCH_2_NEW_BUTTON;
 
         Views.init ();
     }
@@ -757,9 +760,9 @@ public abstract class AbstractConfiguration implements Configuration
 
     /** {@inheritDoc} */
     @Override
-    public int getFootswitch2 ()
+    public int getFootswitch (final int index)
     {
-        return this.footswitch2;
+        return this.footswitch[index];
     }
 
 
@@ -1224,29 +1227,6 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /**
-     * Activate the auto-browser interface state change.
-     *
-     * @param settingsUI The settings
-     */
-    protected void activateAutoBrowserInterface (final ISettingsUI settingsUI)
-    {
-        this.browserAutoViewSetting = settingsUI.getEnumSetting ("Enable Auto-Browser View", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
-        this.browserAutoViewSetting.addValueObserver (value -> {
-            this.browserAutoView = "On".equals (value);
-            this.notifyObservers (ACTIVATE_AUTO_BROWSER_VIEW);
-        });
-
-        this.isSettingActive.add (ACTIVATE_AUTO_BROWSER_VIEW);
-    }    
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isAutoBrowserViewActive ()
-    {
-        return this.browserAutoView;
-    }
-    
-    /**
      * Activate the quantize amount setting.
      *
      * @param settingsUI The settings
@@ -1279,7 +1259,29 @@ public abstract class AbstractConfiguration implements Configuration
         this.isSettingActive.add (MIDI_EDIT_CHANNEL);
     }
 
+    /**
+     * Activate the auto-browser interface state change.
+     *
+     * @param settingsUI The settings
+     */
+    protected void activateAutoBrowserInterface (final ISettingsUI settingsUI)
+    {
+        this.browserAutoViewSetting = settingsUI.getEnumSetting ("Enable Auto-Browser View", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        this.browserAutoViewSetting.addValueObserver (value -> {
+            this.browserAutoView = "On".equals (value);
+            this.notifyObservers (ACTIVATE_AUTO_BROWSER_VIEW);
+        });
 
+        this.isSettingActive.add (ACTIVATE_AUTO_BROWSER_VIEW);
+    }    
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isAutoBrowserViewActive ()
+    {
+        return this.browserAutoView;
+    }    
+    
     /**
      * Activate the auto select drum setting.
      *
@@ -1319,24 +1321,23 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /**
-     * Activate the footswitch setting.
+     * Activate a footswitch setting.
      *
      * @param settingsUI The settings
-     * @param index The index of the foot switch
+     * @param index The index of the footswitch (0-3)
+     * @param label The label to use
      */
-    protected void activateFootswitchSetting (final ISettingsUI settingsUI, final int index)
+    protected void activateFootswitchSetting (final ISettingsUI settingsUI, final int index, final String label)
     {
-        String label = "Footswitch";
-        if (index > 0)
-            label += " " + index;
+        final Integer id = Integer.valueOf (FOOTSWITCH_1.intValue () + index);
 
-        final IEnumSetting footswitch2Setting = settingsUI.getEnumSetting (label, CATEGORY_WORKFLOW, FOOTSWITCH_VALUES, FOOTSWITCH_VALUES[6]);
-        footswitch2Setting.addValueObserver (value -> {
-            this.footswitch2 = lookupIndex (FOOTSWITCH_VALUES, value);
-            this.notifyObservers (FOOTSWITCH_2);
+        final IEnumSetting footswitchSetting = settingsUI.getEnumSetting (label, CATEGORY_WORKFLOW, FOOTSWITCH_VALUES, FOOTSWITCH_VALUES[6]);
+        footswitchSetting.addValueObserver (value -> {
+            this.footswitch[index] = lookupIndex (FOOTSWITCH_VALUES, value);
+            this.notifyObservers (id);
         });
 
-        this.isSettingActive.add (FOOTSWITCH_2);
+        this.isSettingActive.add (id);
     }
 
 
@@ -1361,31 +1362,6 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
-    /**
-     * Activate the auto-browser interface state change.
-     *
-     * @param settingsUI The settings
-     */
-    protected void activateAutoBrowserInterface (final ISettingsUI settingsUI)
-    {
-        this.browserAutoViewSetting = settingsUI.getEnumSetting ("Enable Auto-Browser View", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
-        this.browserAutoViewSetting.addValueObserver (value -> {
-            this.browserAutoView = "On".equals (value);
-            this.notifyObservers (ACTIVATE_AUTO_BROWSER_VIEW);
-        });
-
-        this.isSettingActive.add (ACTIVATE_AUTO_BROWSER_VIEW);
-    }    
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isAutoBrowserViewActive ()
-    {
-        return this.browserAutoView;
-    }
-    
-    
-    
     /**
      * Activate the knob speed settings.
      *
@@ -1773,9 +1749,6 @@ public abstract class AbstractConfiguration implements Configuration
         this.isDeleteActive = !this.isDeleteActive;
         if (this.isDeleteActive)
             this.isDuplicateActive = false;
-
-        if( !this.isDeleteActive )
-            this.host.showNotification ("Delete Off");
     }
 
 
@@ -1798,9 +1771,6 @@ public abstract class AbstractConfiguration implements Configuration
         this.isDuplicateActive = !this.isDuplicateActive;
         if (this.isDuplicateActive)
             this.isDeleteActive = false;
-
-        if( !this.isDuplicateActive )
-            this.host.showNotification ("Duplicate Off");
     }
 
 
@@ -1870,7 +1840,7 @@ public abstract class AbstractConfiguration implements Configuration
     {
         final String [] deviceNames = new String [deviceMetadata.size ()];
         for (int i = 0; i < deviceNames.length; i++)
-            deviceNames[i] = deviceMetadata.get (i).getFullName ();
+            deviceNames[i] = deviceMetadata.get (i).fullName ();
         return deviceNames;
     }
 }
