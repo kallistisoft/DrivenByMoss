@@ -76,7 +76,6 @@ public class LaunchpadConfiguration extends AbstractConfiguration
         this.activateSelectClipOnLaunchSetting (globalSettings);
         if (this.definition.isPro ())
             this.activateFlipRecordSetting (globalSettings);
-        this.activateActionForRecArmedPad (globalSettings);
 
         ///////////////////////////
         // Drum Sequencer
