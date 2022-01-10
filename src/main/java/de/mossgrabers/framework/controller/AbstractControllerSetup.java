@@ -97,7 +97,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
 
     /** {@inheritDoc} */
     @Override
-    public List<S> getSurfaces ()
+    public List<IControlSurface<?>> getSurfaces ()
     {
         return new ArrayList<> (this.surfaces);
     }
@@ -282,9 +282,13 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
             if (isActive.booleanValue ())
             {
                 final Views previousViewId = viewManager.getPreviousID ();
-                viewManager.setTemporary (browserView);
                 if (viewManager.getPreviousID () == Views.SHIFT)
                     viewManager.setPreviousID (previousViewId);
+                    
+                if ( this.configuration.isAutoBrowserViewActive () )
+                {
+                    viewManager.setTemporary (browserView);
+                }
             }
             else if (viewManager.isActive (browserView))
                 viewManager.restore ();
